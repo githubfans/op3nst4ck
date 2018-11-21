@@ -327,9 +327,27 @@ class bg:
     lightgrey = '\033[47m'
 
 
-# print(sys.argv)
+argv1 = ''
+try:
+    argv1 = sys.argv[1]
+except IndexError:
+    print('\n$ ks {condition}')
+    thisfile = open(__file__, "r")
+    tfc = thisfile.read()
+    argv = tfc.strip().split('# start argv ---')[2]
+    prints = str(argv).strip().split('if argv1 == \'')
+    # print(prints)
+    print('\nConditions :')
+    for argv_1 in prints:
+        condition = argv_1.strip().split("':")[0]
+        print(condition)
+    print('\n')
+# start argv ---
+if argv1 == 'rc':
+    '''
+    source login dari file rc
 
-if sys.argv[1] == 'rc':
+    '''
     ks = get_keystone()
     print('Mengganti file rc.')
     nf = open("rc.api3", "r")
@@ -355,7 +373,10 @@ if sys.argv[1] == 'rc':
     else:
         print('rc tsb tidak ada.')
 
-elif sys.argv[1] == 'dlist':
+elif argv1 == 'dlist':
+    '''
+    domain list
+    '''
     print('\n-----------------\nDOMAIN LIST\n------------------\n')
     try:
         _keypress = ''
@@ -368,7 +389,10 @@ elif sys.argv[1] == 'dlist':
     except IndexError:
         print('ERROR')
 
-elif sys.argv[1] == 'dcreate':
+elif argv1 == 'dcreate':
+    '''
+    create domain
+    '''
     print('\n-----------------\nCREATE DOMAIN\n------------------\n')
     UserRC_username = get_var('OS_USERNAME')
     ks = get_keystone()
@@ -406,7 +430,10 @@ elif sys.argv[1] == 'dcreate':
 
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'ddisable':
+elif argv1 == 'ddisable':
+    '''
+    disable domain
+    '''
     print('\n-----------------\nDISABLE DOMAIN\n------------------\n')
     ks = get_keystone()
     try:
@@ -423,7 +450,10 @@ elif sys.argv[1] == 'ddisable':
         update = ks.domains.update(domain=domain_id, enabled=False)
         print(toJSON(update))
 
-elif sys.argv[1] == 'ddelete':
+elif argv1 == 'ddelete':
+    '''
+    delete domain
+    '''
     print('\n-----------------\nDELETE DOMAIN\n------------------\n')
     ks = get_keystone()
     try:
@@ -478,7 +508,10 @@ elif sys.argv[1] == 'ddelete':
 
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'ulist':
+elif argv1 == 'ulist':
+    '''
+    user list
+    '''
     print('\n-----------------\nUSER LIST\n------------------\n')
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     ks = get_keystone()
@@ -492,7 +525,10 @@ elif sys.argv[1] == 'ulist':
     # print('Jum. data : {0}' . format(len(ul)))
     userList(name=name)
 
-elif sys.argv[1] == 'ucreate':
+elif argv1 == 'ucreate':
+    '''
+    create user
+    '''
     print('\n-----------------\nCREATE USER\n------------------\n')
 
     ks = get_keystone()
@@ -558,7 +594,10 @@ elif sys.argv[1] == 'ucreate':
 
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'uupdate':
+elif argv1 == 'uupdate':
+    '''
+    update user
+    '''
     print('\n-----------------\nUPDATE USER\n------------------\n')
 
     ks = get_keystone()
@@ -620,7 +659,10 @@ elif sys.argv[1] == 'uupdate':
     except IndexError:
         print('Error :\nContoh cmd : ks uupdate {project|password}')
 
-elif sys.argv[1] == 'udelete':
+elif argv1 == 'udelete':
+    '''
+    delete user
+    '''
     print('\n-----------------\nDELETE USER\n------------------\n')
     ks = get_keystone()
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
@@ -670,7 +712,10 @@ elif sys.argv[1] == 'udelete':
     else:
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'plist':
+elif argv1 == 'plist':
+    '''
+    project list
+    '''
     print('\n-----------------\nPROJECT LIST\n------------------\n')
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     try:
@@ -690,7 +735,10 @@ elif sys.argv[1] == 'plist':
     except IndexError:
         print('ERROR')
 
-elif sys.argv[1] == 'pcreate':
+elif argv1 == 'pcreate':
+    '''
+    create project
+    '''
     print('\n-----------------\nCREATE PROJECT\n------------------\n')
     ks = get_keystone()
     UserRC_username = get_var('OS_USERNAME')
@@ -722,7 +770,10 @@ elif sys.argv[1] == 'pcreate':
 
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'pupdate':
+elif argv1 == 'pupdate':
+    '''
+    update project
+    '''
     print('\n-----------------\nUPDATE PROJECT\n------------------\n')
     ks = get_keystone()
     UserRC_username = get_var('OS_USERNAME')
@@ -764,7 +815,10 @@ elif sys.argv[1] == 'pupdate':
     else:
         print('Project "' + pro_name + '" bukan domain anda')
 
-elif sys.argv[1] == 'pdelete':
+elif argv1 == 'pdelete':
+    '''
+    delete project
+    '''
     print('\n-----------------\nDELETE PROJECT\n------------------\n')
     ks = get_keystone()
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
@@ -797,7 +851,10 @@ elif sys.argv[1] == 'pdelete':
 
         print('Lengkapi input!')
 
-elif sys.argv[1] == 'rlist':
+elif argv1 == 'rlist':
+    '''
+    role list
+    '''
     print('\n-----------------\nROLE LIST\n------------------\n')
     try:
         _keypress = ''
@@ -810,7 +867,10 @@ elif sys.argv[1] == 'rlist':
     except IndexError:
         print('ERROR')
 
-elif sys.argv[1] == 'rgrant':
+elif argv1 == 'rgrant':
+    '''
+    grant role
+    '''
 
     print('\n-----------------\nROLE GRANT\n------------------\n')
     ks = get_keystone()

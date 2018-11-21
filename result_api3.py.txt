@@ -1,6 +1,29 @@
 alias ks='cd /home/sysadmin/Documents/openstack2/ ; python api3.py '
 
 
+(envOS)  ★  ~/Documents/openstack2   master±  ks
+
+$ ks {condition}
+
+Conditions :
+
+rc
+dlist
+dcreate
+ddisable
+ddelete
+ulist
+ucreate
+uupdate
+udelete
+plist
+pcreate
+pupdate
+pdelete
+rlist
+rgrant
+
+
 (envOS)  ✘ ★  ~/Documents/openstack2  ks dlist
 
 -----------------
