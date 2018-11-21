@@ -1,0 +1,105 @@
+# ADMIN =======================================
+OS_PROJECT_DOMAIN_NAME='default'
+OS_USER_DOMAIN_NAME='Default'
+OS_PROJECT_NAME='admin'
+OS_USERNAME='admin'
+
+# AJI2 =======================================
+OS_PROJECT_DOMAIN_NAME='449309895ba3410cb0d565bba1342b93'
+OS_USER_DOMAIN_NAME='domain.aji'
+OS_PROJECT_NAME='project.aji'
+OS_USERNAME='aji2'
+
+# AJI =======================================
+OS_PROJECT_DOMAIN_NAME='default'
+OS_USER_DOMAIN_NAME='Default'
+OS_PROJECT_NAME='aji'
+OS_USERNAME='aji'
+
+
+OS_PASSWORD='M0nalisa'
+OS_AUTH_URL='http://rocky-controller.jcamp.net:5000/v3/'
+OS_IDENTITY_API_VERSION='3'
+OS_IMAGE_API_VERSION='2'
+
+# WORKS ------------------
+
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+from keystoneclient.v3 import client as ks3client
+
+auth = v3.Password(auth_url=OS_AUTH_URL, 
+                   username=OS_USERNAME, 
+                   password=OS_PASSWORD, 
+                   project_name=OS_PROJECT_NAME, 
+                   user_domain_name=OS_USER_DOMAIN_NAME, 
+                   project_domain_id=OS_PROJECT_DOMAIN_NAME )
+sess = session.Session(auth=auth)
+sess.get_token()
+ks = ks3client.Client(session=sess)
+
+#--------------------------------------
+
+
+
+
+auth = ks3client.Client(auth_url=OS_AUTH_URL, 
+                   username=OS_USERNAME, 
+                   password=OS_PASSWORD, 
+                   project_name=OS_PROJECT_NAME, 
+                   user_domain_name=OS_USER_DOMAIN_NAME, 
+                   project_domain_id=OS_PROJECT_DOMAIN_NAME )
+auth.auth_token
+# tanpa sess ada token
+sess = session.Session(auth=auth)
+sess.get_token()
+keystone = ks3client.Client(session=sess)
+dir(keystone)
+
+
+---------------------------------------
+
+
+from keystoneclient import client
+keystone = client.Client(
+            auth_url=OS_AUTH_URL, 
+            version=(3,),
+            username=OS_USERNAME, 
+            password=OS_PASSWORD,
+            user_domain_name=OS_USER_DOMAIN_NAME,
+            project_name=OS_PROJECT_NAME,
+            project_domain_name=OS_PROJECT_DOMAIN_NAME)
+dir(keystone)
+
+
+-------------------------------
+
+from keystoneauth1.identity import v3
+from keystoneauth1 import session
+from keystoneclient.v3 import client as ks3client, roles, users
+
+auth = v3.Password(
+    auth_url=OS_AUTH_URL,
+    user_domain_name=OS_USER_DOMAIN_NAME,
+    project_domain_id=OS_PROJECT_DOMAIN_NAME,
+    project_name=OS_PROJECT_NAME,
+    username=OS_USERNAME,
+    password=OS_PASSWORD)
+
+sess = session.Session(auth=auth)
+sess.get_token()
+ks = ks3client.Client(session=sess)
+
+user_id = '1c79eb43981a42998e5d239d20b310df'
+domain_id = '449309895ba3410cb0d565bba1342b93'
+role_name = 'role6.aji'
+
+#roleman = roles.RoleManager(keystone)
+#role = roleman.create(name=role_name, domain=domain_id)
+#roleman.grant(role=role_name, user=user_id, domain=domain_id)
+keystone.roles.create(name=role_name, domain=domain_id)
+keystone.roles.grant(role_name, user=user_id, domain=domain_id)
+
+#check_role = roleman.check(role, user=user_id, domain=domain_id)
+check_role = keystone.roles.check(role, user=user_id, domain=domain_id)
+print(check_role)

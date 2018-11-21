@@ -1,0 +1,8 @@
+export OS_PROJECT_DOMAIN_NAME='449309895ba3410cb0d565bba1342b93'
+export OS_USER_DOMAIN_NAME='domain.aji'
+export OS_PROJECT_NAME='project.aji'
+export OS_USERNAME='aji2'
+export OS_PASSWORD='M0nalisa'
+export OS_AUTH_URL='http://rocky-controller.jcamp.net:5000/v3/'
+export OS_IDENTITY_API_VERSION='3'
+export OS_IMAGE_API_VERSION='2'

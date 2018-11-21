@@ -1,0 +1,780 @@
+alias ks='cd /home/sysadmin/Documents/openstack2/ ; python api3.py '
+
+
+(envOS)  ✘ ★  ~/Documents/openstack2  ks dlist
+
+-----------------
+DOMAIN LIST
+------------------
+
+Tunggu...
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+=====================
+
+
+(envOS)  ★  ~/Documents/openstack2  ks dcreate domain3.aji
+
+-----------------
+CREATE DOMAIN
+------------------
+
+Nama domain "domain3.aji" sudah ada.
+(envOS)  ✘ ★  ~/Documents/openstack2  ks dcreate domain4.aji
+
+-----------------
+CREATE DOMAIN
+------------------
+
+Tunggu...
+"domain4.aji" created !
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+domain2.aji     f5787a7b36ab4437850beff84c41aaec   
+domain3.aji     e7666f9347644976a9f76ffc32816ba2   
+domain4.aji     23c8274fd69c4960b926643db41d0980   
+=====================
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ddelete domain4.aji 
+
+-----------------
+DELETE DOMAIN
+------------------
+
+
+Data yang akan dihapus : 
+"{'description': 'dibikin pake api3.py'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/23c8274fd69c4960b926643db41d0980'}
+    'tags': []
+    'enabled': True
+    'createdby': 'aji'
+    'id': '23c8274fd69c4960b926643db41d0980'
+    'name': 'domain4.aji'}"
+Domain "domain4.aji" tidak bisa dihapus karena masih "Enabled"
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ddisable domain4.aji
+
+-----------------
+DISABLE DOMAIN
+------------------
+
+domain_id = 23c8274fd69c4960b926643db41d0980
+{'description': 'dibikin pake api3.py'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/23c8274fd69c4960b926643db41d0980'}
+    'tags': []
+    'enabled': False
+    'createdby': 'aji'
+    'id': '23c8274fd69c4960b926643db41d0980'
+    'name': 'domain4.aji'}
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ddelete domain4.aji 
+
+-----------------
+DELETE DOMAIN
+------------------
+
+
+Data yang akan dihapus : 
+"{'description': 'dibikin pake api3.py'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/23c8274fd69c4960b926643db41d0980'}
+    'tags': []
+    'enabled': False
+    'createdby': 'aji'
+    'id': '23c8274fd69c4960b926643db41d0980'
+    'name': 'domain4.aji'}"
+Domain "domain4.aji" sudah dihapus
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ulist
+
+-----------------
+USER LIST
+------------------
+
+Cari Nama user : 
+Tunggu...
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji6            48709c0294184454a0a2be2e60cb3283    domain.aji      project.aji    
+myuser          dc1c1313279347bc82bb60862d1e70e0    Default                        
+glance          bd70a58ce2aa48908684e666922888ce    Default                        
+nova            40f0d6ff67f643d3b4640d7fe7d0a709    Default                        
+placement       80de48f643c3405e88761483aa8e5490    Default                        
+neutron         8570d22e3fb14e32b5900072b9fd9151    Default                        
+mbog            32983e36c8a248ca859b2e2ad981a91b    Default         myproject      
+aji5            6f71ce681c624915b99bf35829e086ad    domain.aji      project.aji    
+aji4            0c394bb284b74c0cbf3fd9879eb1be2c    domain.aji      project.aji    
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+[6~aji4        de4656ecd25f41a79963154639f1d826    domain.aji      project.aji    
+admin           6aa8a9c2eb514577ab768bd7bdad71af    Default         admin          
+ajio4           893b76734d354e339dc795b590e7baeb    domain.aji      project.aji    
+user.aji        a77efcc49b3a483da5cf1d1ced01e13b    domain.aji                     
+irvan           11517d688b954c758ddc2219b8b601d5    Default         irvan          
+adhi            ebf9a86b2d094f31b61ce18794120196    Default         Semarang       
+jajalan         384f038da28d4baa91d0d8ba7f20b64b    Default         jajalan        
+user2.aji       2f7434267dc3481988244a466eba2822    domain.aji                     
+user3.aji       d31e526b513344a692b4e1cd31826c83    domain.aji                     
+help            10464ae0164749fdb25d6515862133b2    Default                        
+user.aji        e17dc8e867a44cdfacaacde1cf6802fd    Rosalina        project.aji    
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+user.aji        9bb859eb47e04369b6a02da7d4e8f8aa    Default         project.aji    
+Rosalina        57ceac3c118f4311a3a6a054dfb25d2b    Rosalina        projectrosalina
+aji2            1c79eb43981a42998e5d239d20b310df    domain.aji      project.aji    
+bino            b5e8583dffa942b38bc08fda9f26d87f    Default         admin          
+irvan3          4e986e27112d4465bdaa368580992283    Default         irvan4         
+test.aji        e0afec8e7f0c481398cdb055949b18f4    domain.aji      test.aji       
+jasmine         d4eb8f2a79d544f98fc308ead73dd67b    kaliputih.dom                  
+aji4            64705ff9c887462f9c3172803d164570    domain.test1                   
+aji4            6c93648f42e14c1d9bc857381f6e89cc    domain.test2                   
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+irvan2          e101409fe039499981e6be603f29aa2d    Default                        
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+ajiajiaji       12407755ed2348e2b440a1e39f5d724d    Default         project.aji    
+ajiaji          c97c3d003e0f4b27ac96d1b01fa8cd14    Default         project.aji    
+aji4            8171c5c0ad034389b36775bb069407a9    Default         project.aji    
+=====================
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ulist
+
+-----------------
+USER LIST
+------------------
+
+Cari Nama user : aji
+Tunggu...
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+=====================
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ulist
+
+-----------------
+USER LIST
+------------------
+
+Cari Nama user : aji3
+Tunggu...
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+=====================
+
+
+(envOS)  ★  ~/Documents/openstack2  ks ucreate aji3
+
+-----------------
+CREATE USER
+------------------
+
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+domain2.aji     f5787a7b36ab4437850beff84c41aaec   
+domain3.aji     e7666f9347644976a9f76ffc32816ba2   
+=====================
+
+Pilih domain: 449309895ba3410cb0d565bba1342b93
+Domain tidak ditemukan.
+(envOS)  ★  ~/Documents/openstack2  ks ucreate aji3                 
+
+-----------------
+CREATE USER
+------------------
+
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+domain2.aji     f5787a7b36ab4437850beff84c41aaec   
+domain3.aji     e7666f9347644976a9f76ffc32816ba2   
+=====================
+
+Pilih domain: domain.aji
+User "aji3" sudah terdaftar dengan domain "domain.aji".
+
+
+(envOS)  ✘ ★  ~/Documents/openstack2  ks ucreate aji3
+
+-----------------
+CREATE USER
+------------------
+
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+domain2.aji     f5787a7b36ab4437850beff84c41aaec   
+domain3.aji     e7666f9347644976a9f76ffc32816ba2   
+=====================
+
+Pilih domain: domain2.aji
+Tunggu...
+{'name': 'aji3'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/users/c0ee686f7b37458290e80a9251567937'}
+    'domain_id': 'f5787a7b36ab4437850beff84c41aaec'
+    'description': 'dibikin pake api3.py'
+    'enabled': True
+    'options': {}
+    'createdby': 'aji'
+    'id': 'c0ee686f7b37458290e80a9251567937'
+    'password_expires_at': None}
+
+
+(envOS)  ★  ~/Documents/openstack2  ks uupdate project
+
+-----------------
+UPDATE USER
+------------------
+
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji6            48709c0294184454a0a2be2e60cb3283    domain.aji      project.aji    
+myuser          dc1c1313279347bc82bb60862d1e70e0    Default                        
+glance          bd70a58ce2aa48908684e666922888ce    Default                        
+nova            40f0d6ff67f643d3b4640d7fe7d0a709    Default                        
+placement       80de48f643c3405e88761483aa8e5490    Default                        
+neutron         8570d22e3fb14e32b5900072b9fd9151    Default                        
+mbog            32983e36c8a248ca859b2e2ad981a91b    Default         myproject      
+aji5            6f71ce681c624915b99bf35829e086ad    domain.aji      project.aji    
+aji4            0c394bb284b74c0cbf3fd9879eb1be2c    domain.aji      project.aji    
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+[6~aji4        de4656ecd25f41a79963154639f1d826    domain.aji      project.aji    
+admin           6aa8a9c2eb514577ab768bd7bdad71af    Default         admin          
+ajio4           893b76734d354e339dc795b590e7baeb    domain.aji      project.aji    
+user.aji        a77efcc49b3a483da5cf1d1ced01e13b    domain.aji                     
+irvan           11517d688b954c758ddc2219b8b601d5    Default         irvan          
+adhi            ebf9a86b2d094f31b61ce18794120196    Default         Semarang       
+jajalan         384f038da28d4baa91d0d8ba7f20b64b    Default         jajalan        
+user2.aji       2f7434267dc3481988244a466eba2822    domain.aji                     
+user3.aji       d31e526b513344a692b4e1cd31826c83    domain.aji                     
+help            10464ae0164749fdb25d6515862133b2    Default                        
+user.aji        e17dc8e867a44cdfacaacde1cf6802fd    Rosalina        project.aji    
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+user.aji        9bb859eb47e04369b6a02da7d4e8f8aa    Default         project.aji    
+Rosalina        57ceac3c118f4311a3a6a054dfb25d2b    Rosalina        projectrosalina
+aji2            1c79eb43981a42998e5d239d20b310df    domain.aji      project.aji    
+bino            b5e8583dffa942b38bc08fda9f26d87f    Default         admin          
+irvan3          4e986e27112d4465bdaa368580992283    Default         irvan4         
+aji3            c0ee686f7b37458290e80a9251567937    domain2.aji                    
+irvan4          83cadda8794743e7923821a38fea2683    Default         irvan4         
+test.aji        e0afec8e7f0c481398cdb055949b18f4    domain.aji      test.aji       
+jasmine         d4eb8f2a79d544f98fc308ead73dd67b    kaliputih.dom                  
+aji4            64705ff9c887462f9c3172803d164570    domain.test1                   
+aji4            6c93648f42e14c1d9bc857381f6e89cc    domain.test2                   
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+irvan2          e101409fe039499981e6be603f29aa2d    Default                        
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+ajiajiaji       12407755ed2348e2b440a1e39f5d724d    Default         project.aji    
+ajiaji          c97c3d003e0f4b27ac96d1b01fa8cd14    Default         project.aji    
+aji4            8171c5c0ad034389b36775bb069407a9    Default         project.aji    
+=====================
+
+Pilih id user yang akan diupdate : c0ee686f7b37458290e80a9251567937
+
+-----------------
+UPDATE USER : PROJECT
+------------------
+
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default        
+service         49eb39871fb148a29fc2df713eeab655    Default        
+myproject       49b51908c2424ce28f5ac922be2da36c    Default        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default        
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default        
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default        
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default        
+project4.aji    3ded970a01204346ab5409d64b774231    Default        
+projectrosalina ba0fcb3be0d54a47b3439efbf474a0e7    Rosalina       
+projectxxx      47233d3f14cd4508b14f14a07d4f5c50    Default        
+kaliputih.proj  1f027bc9f9c74b2aa173c3c97e853215    kaliputih.dom  
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji     
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji     
+irvan2          a131ae109e6c4927855b0e316410e444    Default        
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default        
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default        
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji     
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default        
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default        
+=====================
+
+Pilih project baru: 33adf9c09bab4d4e84371879ce6a2839
+{'name': 'aji3'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/users/c0ee686f7b37458290e80a9251567937'}
+    'extra': {'description': 'dibikin pake api3.py'
+    'createdby': 'aji'}
+    'domain_id': 'f5787a7b36ab4437850beff84c41aaec'
+    'description': 'dibikin pake api3.py'
+    'enabled': True
+    'options': {}
+    'default_project_id': '33adf9c09bab4d4e84371879ce6a2839'
+    'createdby': 'aji'
+    'id': 'c0ee686f7b37458290e80a9251567937'
+    'password_expires_at': None}
+
+
+(envOS)  ★  ~/Documents/openstack2  ks uupdate password
+
+-----------------
+UPDATE USER
+------------------
+
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji6            48709c0294184454a0a2be2e60cb3283    domain.aji      project.aji    
+myuser          dc1c1313279347bc82bb60862d1e70e0    Default                        
+glance          bd70a58ce2aa48908684e666922888ce    Default                        
+nova            40f0d6ff67f643d3b4640d7fe7d0a709    Default                        
+placement       80de48f643c3405e88761483aa8e5490    Default                        
+neutron         8570d22e3fb14e32b5900072b9fd9151    Default                        
+mbog            32983e36c8a248ca859b2e2ad981a91b    Default         myproject      
+aji5            6f71ce681c624915b99bf35829e086ad    domain.aji      project.aji    
+aji4            0c394bb284b74c0cbf3fd9879eb1be2c    domain.aji      project.aji    
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+[6~aji4        de4656ecd25f41a79963154639f1d826    domain.aji      project.aji    
+admin           6aa8a9c2eb514577ab768bd7bdad71af    Default         admin          
+ajio4           893b76734d354e339dc795b590e7baeb    domain.aji      project.aji    
+user.aji        a77efcc49b3a483da5cf1d1ced01e13b    domain.aji                     
+irvan           11517d688b954c758ddc2219b8b601d5    Default         irvan          
+adhi            ebf9a86b2d094f31b61ce18794120196    Default         Semarang       
+jajalan         384f038da28d4baa91d0d8ba7f20b64b    Default         jajalan        
+user2.aji       2f7434267dc3481988244a466eba2822    domain.aji                     
+user3.aji       d31e526b513344a692b4e1cd31826c83    domain.aji                     
+help            10464ae0164749fdb25d6515862133b2    Default                        
+user.aji        e17dc8e867a44cdfacaacde1cf6802fd    Rosalina        project.aji    
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+user.aji        9bb859eb47e04369b6a02da7d4e8f8aa    Default         project.aji    
+Rosalina        57ceac3c118f4311a3a6a054dfb25d2b    Rosalina        projectrosalina
+aji2            1c79eb43981a42998e5d239d20b310df    domain.aji      project.aji    
+bino            b5e8583dffa942b38bc08fda9f26d87f    Default         admin          
+irvan3          4e986e27112d4465bdaa368580992283    Default         irvan4         
+irvan4          83cadda8794743e7923821a38fea2683    Default         irvan4         
+aji3            c0ee686f7b37458290e80a9251567937    domain2.aji     project2.aji   
+test.aji        e0afec8e7f0c481398cdb055949b18f4    domain.aji      test.aji       
+jasmine         d4eb8f2a79d544f98fc308ead73dd67b    kaliputih.dom                  
+aji4            64705ff9c887462f9c3172803d164570    domain.test1                   
+aji4            6c93648f42e14c1d9bc857381f6e89cc    domain.test2                   
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+irvan2          e101409fe039499981e6be603f29aa2d    Default                        
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+ajiajiaji       12407755ed2348e2b440a1e39f5d724d    Default         project.aji    
+ajiaji          c97c3d003e0f4b27ac96d1b01fa8cd14    Default         project.aji    
+aji4            8171c5c0ad034389b36775bb069407a9    Default         project.aji    
+=====================
+
+Pilih id user yang akan diupdate : c0ee686f7b37458290e80a9251567937
+
+-----------------
+UPDATE USER : PASSWORD
+------------------
+
+Pasang password baru (min. 5 karakter): M0nalisa
+{'name': 'aji3'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/users/c0ee686f7b37458290e80a9251567937'}
+    'extra': {'description': 'dibikin pake api3.py'
+    'createdby': 'aji'}
+    'domain_id': 'f5787a7b36ab4437850beff84c41aaec'
+    'description': 'dibikin pake api3.py'
+    'enabled': True
+    'options': {}
+    'default_project_id': '33adf9c09bab4d4e84371879ce6a2839'
+    'createdby': 'aji'
+    'id': 'c0ee686f7b37458290e80a9251567937'
+    'password_expires_at': None}
+
+
+(envOS)  ★  ~/Documents/openstack2  ks udelete
+
+
+-----------------
+DELETE USER
+------------------
+
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji6            48709c0294184454a0a2be2e60cb3283    domain.aji      project.aji    
+myuser          dc1c1313279347bc82bb60862d1e70e0    Default                        
+glance          bd70a58ce2aa48908684e666922888ce    Default                        
+nova            40f0d6ff67f643d3b4640d7fe7d0a709    Default                        
+placement       80de48f643c3405e88761483aa8e5490    Default                        
+neutron         8570d22e3fb14e32b5900072b9fd9151    Default                        
+mbog            32983e36c8a248ca859b2e2ad981a91b    Default         myproject      
+aji5            6f71ce681c624915b99bf35829e086ad    domain.aji      project.aji    
+aji4            0c394bb284b74c0cbf3fd9879eb1be2c    domain.aji      project.aji    
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+[6~aji4        de4656ecd25f41a79963154639f1d826    domain.aji      project.aji    
+admin           6aa8a9c2eb514577ab768bd7bdad71af    Default         admin          
+ajio4           893b76734d354e339dc795b590e7baeb    domain.aji      project.aji    
+user.aji        a77efcc49b3a483da5cf1d1ced01e13b    domain.aji                     
+irvan           11517d688b954c758ddc2219b8b601d5    Default         irvan          
+adhi            ebf9a86b2d094f31b61ce18794120196    Default         Semarang       
+jajalan         384f038da28d4baa91d0d8ba7f20b64b    Default         jajalan        
+user2.aji       2f7434267dc3481988244a466eba2822    domain.aji                     
+user3.aji       d31e526b513344a692b4e1cd31826c83    domain.aji                     
+help            10464ae0164749fdb25d6515862133b2    Default                        
+user.aji        e17dc8e867a44cdfacaacde1cf6802fd    Rosalina        project.aji    
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+user.aji        9bb859eb47e04369b6a02da7d4e8f8aa    Default         project.aji    
+Rosalina        57ceac3c118f4311a3a6a054dfb25d2b    Rosalina        projectrosalina
+aji2            1c79eb43981a42998e5d239d20b310df    domain.aji      project.aji    
+bino            b5e8583dffa942b38bc08fda9f26d87f    Default         admin          
+irvan3          4e986e27112d4465bdaa368580992283    Default         irvan4         
+irvan4          83cadda8794743e7923821a38fea2683    Default         irvan4         
+aji3            c0ee686f7b37458290e80a9251567937    domain2.aji     project2.aji   
+test.aji        e0afec8e7f0c481398cdb055949b18f4    domain.aji      test.aji       
+jasmine         d4eb8f2a79d544f98fc308ead73dd67b    kaliputih.dom                  
+aji4            64705ff9c887462f9c3172803d164570    domain.test1                   
+aji4            6c93648f42e14c1d9bc857381f6e89cc    domain.test2                   
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+irvan2          e101409fe039499981e6be603f29aa2d    Default                        
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+ajiajiaji       12407755ed2348e2b440a1e39f5d724d    Default         project.aji    
+ajiaji          c97c3d003e0f4b27ac96d1b01fa8cd14    Default         project.aji    
+aji4            8171c5c0ad034389b36775bb069407a9    Default         project.aji    
+=====================
+
+Pilih id user : c0ee686f7b37458290e80a9251567937
+Tunggu...
+User tersebut tidak bisa dihapus karena bukan domain anda.
+
+
+(envOS)  ★  ~/Documents/openstack2  ks pcreate
+
+-----------------
+CREATE PROJECT
+------------------
+
+Nama project : project3.aji
+=====================
+List Domain
+---------------------
+DOMAIN          ID                                 
+Default         default                            
+testaja         ab3bb27e102a4c7694554337a161d64d   
+domainaji       245ecf28a7a44ea4bf2a4e89a2631981   
+Rosalina        7116d90f0d1446bd95a6be3d34341680   
+domain.aji      449309895ba3410cb0d565bba1342b93   
+domain.test1    3b933e86a4ea4fffbd688a52de24b31c   
+domain.test2    cd2ee5b4f8744b2aa57708a7dd2580f0   
+kaliputih.dom   fbbe15c29bb44a99a00b2a66458e9786   
+domain2.aji     f5787a7b36ab4437850beff84c41aaec   
+domain3.aji     e7666f9347644976a9f76ffc32816ba2   
+=====================
+
+Pilih id domain: e7666f9347644976a9f76ffc32816ba2
+Tunggu...
+{'is_domain': False
+    'description': 'dibikin pake api3.py'
+    'links': {'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/fd104beb39854ce7a8f55808c2443cb3'}
+    'tags': []
+    'enabled': True
+    'id': 'fd104beb39854ce7a8f55808c2443cb3'
+    'parent_id': 'e7666f9347644976a9f76ffc32816ba2'
+    'createdby': 'aji'
+    'domain_id': 'e7666f9347644976a9f76ffc32816ba2'
+    'name': 'project3.aji'}
+
+
+(envOS)  ✘ ★  ~/Documents/openstack2  ks pupdate
+
+-----------------
+UPDATE PROJECT
+------------------
+
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default        
+project5.aji    608a4c03ae424d279fcde53ede5d446c    Default        
+pppppp          3ded970a01204346ab5409d64b774231    Default        
+service         49eb39871fb148a29fc2df713eeab655    Default        
+myproject       49b51908c2424ce28f5ac922be2da36c    Default        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default        
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default        
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default        
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default        
+irvan2          a131ae109e6c4927855b0e316410e444    Default        
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default        
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default        
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default        
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default        
+=====================
+
+Pilih id project : 3ded970a01204346ab5409d64b774231
+Update dengan nama baru (min. 5 karakter) : project5.aji
+Nama project "project5.aji" sudah ada.
+Update dengan nama baru (min. 5 karakter) : project4.aji        
+Project "project4.aji" sudah diupdate
+
+
+(envOS)  ★  ~/Documents/openstack2  ks pupdate
+
+-----------------
+UPDATE PROJECT
+------------------
+
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default        
+project5.aji    608a4c03ae424d279fcde53ede5d446c    Default        
+project4.aji    3ded970a01204346ab5409d64b774231    Default        
+service         49eb39871fb148a29fc2df713eeab655    Default        
+myproject       49b51908c2424ce28f5ac922be2da36c    Default        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default        
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default        
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default        
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default        
+irvan2          a131ae109e6c4927855b0e316410e444    Default        
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default        
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default        
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default        
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default        
+=====================
+
+Pilih id project : 
+Batal update project.
+
+
+(envOS)  ★  ~/Documents/openstack2  ks pdelete
+
+-----------------
+DELETE PROJECT
+------------------
+
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default        
+service         49eb39871fb148a29fc2df713eeab655    Default        
+myproject       49b51908c2424ce28f5ac922be2da36c    Default        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default        
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default        
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default        
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default        
+project4.aji    3ded970a01204346ab5409d64b774231    Default        
+projectrosalina ba0fcb3be0d54a47b3439efbf474a0e7    Rosalina       
+projectxxx      47233d3f14cd4508b14f14a07d4f5c50    Default        
+kaliputih.proj  1f027bc9f9c74b2aa173c3c97e853215    kaliputih.dom  
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji     
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji     
+irvan2          a131ae109e6c4927855b0e316410e444    Default        
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default        
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default        
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji     
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default        
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default        
+project3.aji    fd104beb39854ce7a8f55808c2443cb3    domain3.aji    
+=====================
+
+Pilih id project :33adf9c09bab4d4e84371879ce6a2839
+Tunggu...
+Project "project2.aji" bukan domain anda
+
+
+(envOS)  ✘ ★  ~/Documents/openstack2  ks pdelete
+
+-----------------
+DELETE PROJECT
+------------------
+
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default        
+service         49eb39871fb148a29fc2df713eeab655    Default        
+myproject       49b51908c2424ce28f5ac922be2da36c    Default        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default        
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default        
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default        
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default        
+project4.aji    3ded970a01204346ab5409d64b774231    Default        
+projectrosalina ba0fcb3be0d54a47b3439efbf474a0e7    Rosalina       
+projectxxx      47233d3f14cd4508b14f14a07d4f5c50    Default        
+kaliputih.proj  1f027bc9f9c74b2aa173c3c97e853215    kaliputih.dom  
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji     
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji     
+irvan2          a131ae109e6c4927855b0e316410e444    Default        
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default        
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default        
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji     
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default        
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default        
+project3.aji    fd104beb39854ce7a8f55808c2443cb3    domain3.aji    
+=====================
+
+Pilih id project :47233d3f14cd4508b14f14a07d4f5c50
+Tunggu...
+Project "projectxxx" sudah dihapus
+
+
+(envOS)  ★  ~/Documents/openstack2  ks rgrant
+
+-----------------
+ROLE GRANT
+------------------
+
+=====================
+List Role
+---------------------
+ROLE            ID                                  DOMAIN         
+domainrole      ac60a453ff854f9e9cefe088c6d111c8    Default
+role.aji        58451c34b78648caad45e6f9bf5f5191    domain.aji
+role3.aji       5f80e0c049964d3d8d27976a9afd28ef    domain.aji
+role2.aji       144ec3eee0a54f538c4909405f4a0f4e    domain.aji
+role4.aji       61fdce05ad8c4a0e85e9611e3bef0c4d    domain.aji
+role5.aji       82fcd99972844595a6805d3b9dddc0a1    domain.aji
+role6.aji       7c8b074bc4cd4b01ab56a037d0ff39c0    domain.aji
+role7.aji       9bc3bee7b54d439197092c97586ab0ce    domain.aji
+role8.aji       349bf5fbee9f4a67b6fd3644c0fd4654    domain.aji
+role9.aji       8d14f998e8cb4c76b4754a9053594ba8    domain.aji
+role10.aji      d2e9ca4f85c14ea2ae2236d9f4984fcf    domain.aji
+kaliputih.role  5bda0393aef745d28a3027410aaff7b0    kaliputih.dom
+reader          3c44f416cf1040caac3b6057ccf4dbd0    
+member          adc3f57d47234406a0c6440b3bf07827    
+admin           19c6ed1d6fce4b38952193ab6b25dce9    
+myrole          83f9544c687040f59ad00dcf9f1e23a6    
+user            976bc4b590124efa89c563bce404f938    
+testdihorizon   6b6bedfad89f42e5acf1c021762c5947    
+roleirvan       b637bb2fedd04553b353e9ac9aa6bf60    
+role2.aji       65f27f64bda74355a2cae5dd192cbbc9    
+testrole.aji    ba073630587246f988cda9dae1ff5aa1    
+=====================
+
+Pilih id role : d2e9ca4f85c14ea2ae2236d9f4984fcf
+=====================
+List User
+---------------------
+USERNAME        ID                                  DOMAIN          PROJECT        
+aji6            48709c0294184454a0a2be2e60cb3283    domain.aji      project.aji    
+myuser          dc1c1313279347bc82bb60862d1e70e0    Default                        
+glance          bd70a58ce2aa48908684e666922888ce    Default                        
+nova            40f0d6ff67f643d3b4640d7fe7d0a709    Default                        
+placement       80de48f643c3405e88761483aa8e5490    Default                        
+neutron         8570d22e3fb14e32b5900072b9fd9151    Default                        
+mbog            32983e36c8a248ca859b2e2ad981a91b    Default         myproject      
+aji5            6f71ce681c624915b99bf35829e086ad    domain.aji      project.aji    
+aji4            0c394bb284b74c0cbf3fd9879eb1be2c    domain.aji      project.aji    
+aji3            f6df8190ceeb47a1a513c85dfa328e91    domain.aji      project.aji    
+[6~aji4        de4656ecd25f41a79963154639f1d826    domain.aji      project.aji    
+admin           6aa8a9c2eb514577ab768bd7bdad71af    Default         admin          
+ajio4           893b76734d354e339dc795b590e7baeb    domain.aji      project.aji    
+user.aji        a77efcc49b3a483da5cf1d1ced01e13b    domain.aji                     
+irvan           11517d688b954c758ddc2219b8b601d5    Default         irvan          
+adhi            ebf9a86b2d094f31b61ce18794120196    Default         Semarang       
+jajalan         384f038da28d4baa91d0d8ba7f20b64b    Default         jajalan        
+user2.aji       2f7434267dc3481988244a466eba2822    domain.aji                     
+user3.aji       d31e526b513344a692b4e1cd31826c83    domain.aji                     
+help            10464ae0164749fdb25d6515862133b2    Default                        
+user.aji        e17dc8e867a44cdfacaacde1cf6802fd    Rosalina        project.aji    
+aji             2661ef095ffc4899a62cd8afd8b422fc    Default         aji            
+user.aji        9bb859eb47e04369b6a02da7d4e8f8aa    Default         project.aji    
+Rosalina        57ceac3c118f4311a3a6a054dfb25d2b    Rosalina        projectrosalina
+aji2            1c79eb43981a42998e5d239d20b310df    domain.aji      project.aji    
+bino            b5e8583dffa942b38bc08fda9f26d87f    Default         admin          
+irvan4          83cadda8794743e7923821a38fea2683    Default         irvan4         
+aji3            c0ee686f7b37458290e80a9251567937    domain2.aji     project2.aji   
+irvan3          4e986e27112d4465bdaa368580992283    Default         irvan4         
+test.aji        e0afec8e7f0c481398cdb055949b18f4    domain.aji      test.aji       
+jasmine         d4eb8f2a79d544f98fc308ead73dd67b    kaliputih.dom                  
+aji4            64705ff9c887462f9c3172803d164570    domain.test1                   
+aji4            6c93648f42e14c1d9bc857381f6e89cc    domain.test2                   
+aji3            a3d762eabf834ac4aa8e11a9f212da7b    domain.test1    test.aji       
+irvan2          e101409fe039499981e6be603f29aa2d    Default                        
+aji3            094033f8618a410686337c222569345f    Default         project.aji    
+ajiajiaji       12407755ed2348e2b440a1e39f5d724d    Default         project.aji    
+ajiaji          c97c3d003e0f4b27ac96d1b01fa8cd14    Default         project.aji    
+aji4            8171c5c0ad034389b36775bb069407a9    Default         project.aji    
+=====================
+
+Pilih id user yang akan di-role : 12407755ed2348e2b440a1e39f5d724d
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN                             
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji     
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji     
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji     
+=====================
+
+Pilih id project yang akan di-role : 56a2cb6964d94577af24a7aa0269f25e
+"{'scope': {'project': {'id': '56a2cb6964d94577af24a7aa0269f25e'}}
+    'role': {'id': 'd2e9ca4f85c14ea2ae2236d9f4984fcf'}
+    'user': {'id': '12407755ed2348e2b440a1e39f5d724d'}
+    'links': {'assignment': 'http://rocky-controller.jcamp.net:5000/v3/projects/56a2cb6964d94577af24a7aa0269f25e/users/12407755ed2348e2b440a1e39f5d724d/roles/d2e9ca4f85c14ea2ae2236d9f4984fcf'}}
+
+{'scope': {'domain': {'id': 'default'}}
+    'role': {'id': 'd2e9ca4f85c14ea2ae2236d9f4984fcf'}
+    'user': {'id': '12407755ed2348e2b440a1e39f5d724d'}
+    'links': {'assignment': 'http://rocky-controller.jcamp.net:5000/v3/domains/default/users/12407755ed2348e2b440a1e39f5d724d/roles/d2e9ca4f85c14ea2ae2236d9f4984fcf'}}"

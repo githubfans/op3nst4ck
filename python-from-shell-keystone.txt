@@ -1,0 +1,144 @@
+>>> OS_PROJECT_DOMAIN_NAME='default'
+>>> OS_USER_DOMAIN_NAME='Default'
+>>> OS_PROJECT_NAME='admin'
+>>> OS_USERNAME='admin'
+>>> OS_PASSWORD='M0nalisa'
+>>> OS_AUTH_URL='http://rocky-controller.jcamp.net:5000/v3/'
+>>> OS_IDENTITY_API_VERSION='3'
+>>> OS_IMAGE_API_VERSION='2'
+>>> from keystoneauth1 import session
+>>> from keystoneauth1.identity import v3
+>>> from keystoneclient.v3 import client as ks3client
+
+>>> auth = v3.Password(auth_url=OS_AUTH_URL, 
+...                    username=OS_USERNAME, 
+...                    password=OS_PASSWORD, 
+...                    project_name=OS_PROJECT_NAME, 
+...                    user_domain_name=OS_USER_DOMAIN_NAME, 
+...                    project_domain_id=OS_PROJECT_DOMAIN_NAME )
+
+>>> sess = session.Session(auth=auth)
+
+>>> sess.get_token()
+'gAAAAABb46VlOq91KtV8nFDA8FCZMg8TdkKI-fdbjrhtbxY9iyn2yCizlAlISY08Tf_-511Mr_pVLbCosOdYmh5aMdYwvI5Hu0kWUeJFK1rK8KbkhSSIlPvTkZzHl6D_1xawaFhfnvSWSmf0GIpfJCr30e0cT9xSXY0WuDPS3gQqYFVmvVs5aXI'
+
+>>> keystone = ks3client.Client(session=sess)
+
+>>> keystone.projects.list()
+[<Project description=Bootstrap project for initializing the cloud., domain_id=default, enabled=True, id=8c3ff5ffe6794b1db42fca2d8fc45104, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/8c3ff5ffe6794b1db42fca2d8fc45104'}, name=admin, parent_id=default, tags=[]>, <Project description=Service Project, domain_id=default, enabled=True, id=49eb39871fb148a29fc2df713eeab655, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/49eb39871fb148a29fc2df713eeab655'}, name=service, parent_id=default, tags=[]>, <Project description=Demo Project, domain_id=default, enabled=True, id=49b51908c2424ce28f5ac922be2da36c, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/49b51908c2424ce28f5ac922be2da36c'}, name=myproject, parent_id=default, tags=[]>, <Project description=aji project, domain_id=default, enabled=True, id=c0b89f614b5a457cb5acef8fe8c2b320, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/c0b89f614b5a457cb5acef8fe8c2b320'}, name=aji, parent_id=default, tags=[]>, <Project description=irvan project, domain_id=default, enabled=True, id=82f25d549c774d1eaf9c0b9b45079e7b, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/82f25d549c774d1eaf9c0b9b45079e7b'}, name=irvan, parent_id=default, tags=[]>, <Project description=, domain_id=default, enabled=True, id=6c39ed979c504f62ad406c946292ff3d, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/6c39ed979c504f62ad406c946292ff3d'}, name=Semarang, parent_id=default, tags=[]>, <Project description=, domain_id=default, enabled=True, id=f4aa63dc85294d5abe97010d7ae057e0, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/f4aa63dc85294d5abe97010d7ae057e0'}, name=jajalan, parent_id=default, tags=[]>]
+
+>>> keystone.domains.list()
+[<Domain description=The default domain, enabled=True, id=default, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/default'}, name=Default, tags=[]>, <Domain description=, enabled=True, id=ab3bb27e102a4c7694554337a161d64d, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/ab3bb27e102a4c7694554337a161d64d'}, name=testaja, tags=[]>]
+
+>>> keystone.domains.create(name='domainaji')
+<Domain description=, enabled=True, id=245ecf28a7a44ea4bf2a4e89a2631981, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/245ecf28a7a44ea4bf2a4e89a2631981'}, name=domainaji, tags=[]>
+
+>>> keystone.domains.list()
+[<Domain description=The default domain, enabled=True, id=default, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/default'}, name=Default, tags=[]>, <Domain description=, enabled=True, id=ab3bb27e102a4c7694554337a161d64d, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/ab3bb27e102a4c7694554337a161d64d'}, name=testaja, tags=[]>, <Domain description=, enabled=True, id=245ecf28a7a44ea4bf2a4e89a2631981, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/245ecf28a7a44ea4bf2a4e89a2631981'}, name=domainaji, tags=[]>]
+
+>>> keystone.domains.create(name='domain.aji')
+<Domain description=, enabled=True, id=449309895ba3410cb0d565bba1342b93, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/449309895ba3410cb0d565bba1342b93'}, name=domain.aji, tags=[]>
+
+>>> keystone.projects.create(name='project.aji', domain='domain.aji')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneclient/v3/projects.py", line 113, in create
+    **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneclient/base.py", line 86, in func
+    return f(*args, **new_kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneclient/base.py", line 382, in create
+    self.key)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneclient/base.py", line 192, in _post
+    resp, body = self.client.post(url, body=body, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/adapter.py", line 357, in post
+    return self.request(url, 'POST', **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/adapter.py", line 510, in request
+    resp = super(LegacyJsonAdapter, self).request(*args, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/adapter.py", line 213, in request
+    return self.session.request(url, method, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 869, in request
+    raise exceptions.from_response(resp, method, url)
+keystoneauth1.exceptions.http.BadRequest: Invalid input for field 'domain_id': u'domain.aji' does not match '^[a-zA-Z0-9-]+$'
+
+Failed validating 'pattern' in schema['properties']['domain_id']:
+    {'maxLength': 64,
+     'minLength': 1,
+     'pattern': '^[a-zA-Z0-9-]+$',
+     'type': ['string', 'null']}
+
+On instance['domain_id']:
+    u'domain.aji' (HTTP 400) (Request-ID: req-0729916b-5d72-408e-80ba-501f62e63e63)
+
+>>> keystone.projects.create(name='project.aji', domain='449309895ba3410cb0d565bba1342b93')
+<Project description=, domain_id=449309895ba3410cb0d565bba1342b93, enabled=True, id=56a2cb6964d94577af24a7aa0269f25e, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/56a2cb6964d94577af24a7aa0269f25e'}, name=project.aji, parent_id=449309895ba3410cb0d565bba1342b93, tags=[]>
+
+>>> keystone.users.create(name='aji2', domain='449309895ba3410cb0d565bba1342b93', password='M0nalisa', email='haryadi@jogjacamp.co.id')
+<User domain_id=449309895ba3410cb0d565bba1342b93, email=haryadi@jogjacamp.co.id, enabled=True, id=1c79eb43981a42998e5d239d20b310df, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/users/1c79eb43981a42998e5d239d20b310df'}, name=aji2, options={}, password_expires_at=None>
+
+>>> keystone.projects.delete(name='project.aji', domain='449309895ba3410cb0d565bba1342b93')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: delete() got an unexpected keyword argument 'name'
+
+>>> keystone.projects.delete(project='project.aji', domain='449309895ba3410cb0d565bba1342b93')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: delete() got an unexpected keyword argument 'domain'
+
+>>> keystone.projects.delete(project='project.aji', domain_id='449309895ba3410cb0d565bba1342b93')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: delete() got an unexpected keyword argument 'domain_id'
+
+>>> keystone.projects.delete(project='c941cc2e75d8430ca8436b297434f3ff', domain='449309895ba3410cb0d565bba1342b93')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: delete() got an unexpected keyword argument 'domain'
+
+>>> keystone.projects.delete(project='c941cc2e75d8430ca8436b297434f3ff')
+(<Response [204]>, None)
+
+>>> keystone.roles.create(name='role.aji', domain='449309895ba3410cb0d565bba1342b93')
+<Role domain_id=449309895ba3410cb0d565bba1342b93, id=58451c34b78648caad45e6f9bf5f5191, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/roles/58451c34b78648caad45e6f9bf5f5191'}, name=role.aji>
+
+>>> keystone.projects.list()
+[<Project description=Bootstrap project for initializing the cloud., domain_id=default, enabled=True, id=8c3ff5ffe6794b1db42fca2d8fc45104, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/8c3ff5ffe6794b1db42fca2d8fc45104'}, name=admin, parent_id=default, tags=[]>, <Project description=Service Project, domain_id=default, enabled=True, id=49eb39871fb148a29fc2df713eeab655, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/49eb39871fb148a29fc2df713eeab655'}, name=service, parent_id=default, tags=[]>, <Project description=Demo Project, domain_id=default, enabled=True, id=49b51908c2424ce28f5ac922be2da36c, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/49b51908c2424ce28f5ac922be2da36c'}, name=myproject, parent_id=default, tags=[]>, <Project description=aji project, domain_id=default, enabled=True, id=c0b89f614b5a457cb5acef8fe8c2b320, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/c0b89f614b5a457cb5acef8fe8c2b320'}, name=aji, parent_id=default, tags=[]>, <Project description=irvan project, domain_id=default, enabled=True, id=82f25d549c774d1eaf9c0b9b45079e7b, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/82f25d549c774d1eaf9c0b9b45079e7b'}, name=irvan, parent_id=default, tags=[]>, <Project description=, domain_id=default, enabled=True, id=6c39ed979c504f62ad406c946292ff3d, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/6c39ed979c504f62ad406c946292ff3d'}, name=Semarang, parent_id=default, tags=[]>, <Project description=, domain_id=default, enabled=True, id=f4aa63dc85294d5abe97010d7ae057e0, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/f4aa63dc85294d5abe97010d7ae057e0'}, name=jajalan, parent_id=default, tags=[]>, <Project description=, domain_id=7116d90f0d1446bd95a6be3d34341680, enabled=True, id=ba0fcb3be0d54a47b3439efbf474a0e7, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/ba0fcb3be0d54a47b3439efbf474a0e7'}, name=projectrosalina, parent_id=7116d90f0d1446bd95a6be3d34341680, tags=[]>, <Project description=, domain_id=449309895ba3410cb0d565bba1342b93, enabled=True, id=56a2cb6964d94577af24a7aa0269f25e, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/56a2cb6964d94577af24a7aa0269f25e'}, name=project.aji, parent_id=449309895ba3410cb0d565bba1342b93, tags=[]>]
+
+
+>>> keystone.projects.list(domain='449309895ba3410cb0d565bba1342b93')
+[<Project description=, domain_id=449309895ba3410cb0d565bba1342b93, enabled=True, id=56a2cb6964d94577af24a7aa0269f25e, is_domain=False, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/projects/56a2cb6964d94577af24a7aa0269f25e'}, name=project.aji, parent_id=449309895ba3410cb0d565bba1342b93, tags=[]>]
+
+>>> keystone.users.list(domain='449309895ba3410cb0d565bba1342b93')
+[<User domain_id=449309895ba3410cb0d565bba1342b93, email=haryadi@jogjacamp.co.id, enabled=True, id=1c79eb43981a42998e5d239d20b310df, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/users/1c79eb43981a42998e5d239d20b310df'}, name=aji2, options={}, password_expires_at=None>]
+
+>>> keystone.domains.list()
+[<Domain description=The default domain, enabled=True, id=default, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/default'}, name=Default, tags=[]>, <Domain description=, enabled=True, id=ab3bb27e102a4c7694554337a161d64d, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/ab3bb27e102a4c7694554337a161d64d'}, name=testaja, tags=[]>, <Domain description=, enabled=True, id=245ecf28a7a44ea4bf2a4e89a2631981, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/245ecf28a7a44ea4bf2a4e89a2631981'}, name=domainaji, tags=[]>, <Domain description=, enabled=True, id=7116d90f0d1446bd95a6be3d34341680, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/7116d90f0d1446bd95a6be3d34341680'}, name=Rosalina, tags=[]>, <Domain description=, enabled=True, id=449309895ba3410cb0d565bba1342b93, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/domains/449309895ba3410cb0d565bba1342b93'}, name=domain.aji, tags=[]>]
+
+
+
+>>> OS_PROJECT_DOMAIN_NAME='449309895ba3410cb0d565bba1342b93'
+>>> OS_USER_DOMAIN_NAME='domain.aji'
+>>> OS_PROJECT_NAME='project.aji'
+>>> OS_USERNAME='aji2'
+>>> from keystoneauth1 import session
+>>> from keystoneauth1.identity import v3
+>>> from keystoneclient.v3 import client as ks3client
+>>> 
+>>> auth = v3.Password(auth_url=OS_AUTH_URL, 
+...                    username=OS_USERNAME, 
+...                    password=OS_PASSWORD, 
+...                    project_name=OS_PROJECT_NAME, 
+...                    user_domain_name=OS_USER_DOMAIN_NAME, 
+...                    project_domain_id=OS_PROJECT_DOMAIN_NAME )
+>>> sess = session.Session(auth=auth)
+>>> sess.get_token()
+'gAAAAABb4_QreBGvww7NwgYzH6FdFi99c27BSpmF5ye0TRpDVCEN8pu_1Y4ZK-0rSp3-CnZ5D1RfSEUyiKoSuKPWJWkL6H1JZdIiZffpSiDSrYKQOTcs7n9TFOEixLXCOgTHnKExKx_5cPrZ4ZzsCLv6iVyBoVbHghOr07uqCllrp3oRiLOOzoA'
+>>> keystone = ks3client.Client(session=sess)
+>>> keystone.roles.create(name='role.aji', domain='domain.aji')
+<Role domain_id=domain.aji, id=9d90b429fb064319819b9c73cda22b47, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/roles/9d90b429fb064319819b9c73cda22b47'}, name=role.aji>
+>>> 
+
+>>> keystone.roles.list(name='role.aji')
+[]
+>>> keystone.roles.list(name='role2.aji')
+[<Role domain_id=None, id=65f27f64bda74355a2cae5dd192cbbc9, links={'self': 'http://rocky-controller.jcamp.net:5000/v3/roles/65f27f64bda74355a2cae5dd192cbbc9'}, name=role2.aji>]
