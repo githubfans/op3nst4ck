@@ -125,12 +125,17 @@ def domainList():
     print('=====================')
     print('List Domain')
     print('---------------------')
-    print('DOMAIN'.ljust(15, ' '), 'ID'.ljust(35, ' '))
+    print('DOMAIN'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DESC.'.ljust(35, ' '), 'CREATOR.'.ljust(35, ' '))
     dl = ks.domains.list()
     for dom in dl:
         json_str = json.dumps(dom.to_dict())
         resp = json.loads(json_str)
-        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '))
+        # print(resp)
+        if re.search('createdby', str(json_str)):
+            createdby = resp['createdby'].ljust(20, ' ')
+        else:
+            createdby = ''
+        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), resp['description'].ljust(35, ' '), createdby)
     print('=====================\n')
 
 
@@ -140,7 +145,7 @@ def userList(name=''):
     print(f.bold + fg.blue + '---------------------' + f.reset)
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     UserRC_username = get_var('OS_USERNAME')
-    print('USERNAME'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(15, ' '), 'PROJECT'.ljust(15, ' '))
+    print('USERNAME'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(15, ' '), 'PROJECT'.ljust(15, ' '), 'DESC.'.ljust(35, ' '), 'CREATOR.'.ljust(35, ' '))
     if is_admin(UserRC_username):
         if name != '':
             getuserlist = ks.users.list(name=name)
@@ -167,7 +172,15 @@ def userList(name=''):
                 getproject = def_pro_id + ' (?)'
         else:
             getproject = ''
-        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), getproject.ljust(15, ' '))
+        if re.search('createdby', str(json_str)):
+            createdby = resp['createdby'].ljust(35, ' ')
+        else:
+            createdby = ''
+        if re.search('description', str(json_str)):
+            description = resp['description'].ljust(35, ' ')
+        else:
+            description = ''
+        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), getproject.ljust(15, ' '), description, createdby)
     print('=====================\n')
 
 
@@ -175,7 +188,7 @@ def projectList(domain=''):
     print(f.bold + fg.blue + '=====================' + f.reset)
     print(f.bold + fg.blue + 'List Project' + f.reset)
     print(f.bold + fg.blue + '---------------------' + f.reset)
-    print('PROJECT'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(35, ' '))
+    print('PROJECT'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(15, ' '), 'DESC.'.ljust(35, ' '), 'CREATOR.'.ljust(35, ' '))
     UserRC_username = get_var('OS_USERNAME')
     if is_admin(UserRC_username):
         if domain != '':
@@ -190,11 +203,15 @@ def projectList(domain=''):
     for pro in pl:
         json_str = json.dumps(pro.to_dict())
         resp = json.loads(json_str)
+        if re.search('createdby', str(json_str)):
+            createdby = resp['createdby'].ljust(20, ' ')
+        else:
+            createdby = ''
         if resp['domain_id'] is not None:
             getdomain = parsing(data=str(ks.domains.get(domain=resp['domain_id'])), var='name')
         else:
             getdomain = ''
-        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '))
+        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), resp['description'].ljust(35, ' '), createdby)
     print('=====================\n')
 
 
@@ -359,7 +376,8 @@ if argv1 == 'rc':
     try:
         rcname = sys.argv[2]
     except IndexError:
-        rcname = input('Nama file rc : ')
+        os.system('echo "" ; echo "------- LIST FILE RC -------" ; echo "" ; ls *rc ; echo "" ; echo "---------------------" ; echo "" ;')
+        rcname = input('Pilih file rc : ')
 
     if os.path.exists(rcname) and os.access(rcname, os.R_OK):
         if rcname is None:
@@ -409,7 +427,7 @@ elif argv1 == 'dcreate':
     if cek_ada_data(object='domains', name=name):
         exit('Nama domain "' + name + '" sudah ada.')
 
-    desc = 'dibikin pake api3.py'
+    desc = 'dibikin pake ' + __file__
 
     print('Tunggu...')
 
@@ -535,7 +553,7 @@ elif argv1 == 'ucreate':
     ks = get_keystone()
     name = ''
     cek = ''
-    desc = 'dibikin pake api3.py'
+    desc = 'dibikin pake ' + __file__
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     UserRC_domain_name = get_var('OS_USER_DOMAIN_NAME')
     UserRC_username = get_var('OS_USERNAME')
@@ -604,7 +622,7 @@ elif argv1 == 'uupdate':
     ks = get_keystone()
     name = ''
     cek = ''
-    desc = 'dibikin pake api3.py'
+    desc = 'dibikin pake ' + __file__
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     UserRC_domain_name = get_var('OS_USER_DOMAIN_NAME')
 
@@ -745,7 +763,7 @@ elif argv1 == 'pcreate':
     UserRC_username = get_var('OS_USERNAME')
     UserRC_domain_name = get_var('OS_USER_DOMAIN_NAME')
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
-    desc = 'dibikin pake api3.py'
+    desc = 'dibikin pake ' + __file__
 
     name = input('Nama project : ')
     if name == '':
@@ -780,9 +798,12 @@ elif argv1 == 'pupdate':
     UserRC_username = get_var('OS_USERNAME')
     UserRC_domain_name = get_var('OS_USER_DOMAIN_NAME')
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
-    desc = 'dibikin pake api3.py'
+    desc = 'dibikin pake ' + __file__
 
-    projectList(domain=UserRC_domain_id)
+    if is_admin(UserRC_username):
+        projectList()
+    else:
+        projectList(domain=UserRC_domain_id)
     project = input('Pilih id project : ')
     if project == '':
         exit('Batal update project.')
@@ -791,6 +812,9 @@ elif argv1 == 'pupdate':
     strpl = str(pget)
     dom_id = parsing(strpl, 'domain_id')
     pro_name = parsing(strpl, 'name')
+    if is_admin(UserRC_username) is False:
+        if dom_id != UserRC_domain_id:
+            exit('Project "' + pro_name + '" bukan domain anda')
 
     new_name = ''
     psearch = ''
@@ -805,16 +829,14 @@ elif argv1 == 'pupdate':
         if n > 3:
             exit('Batal update nama baru.')
 
-    if dom_id == UserRC_domain_id:
-        pd = ks.projects.update(project=project, name=new_name)
-        # print(str(pd))
-        pro_name = parsing(str(pd), 'name')
-        if pro_name == new_name:
-            print('Project "' + pro_name + '" sudah diupdate')
-        else:
-            print('Project "' + pro_name + '" tidak terupdate')
+    pd = ks.projects.update(project=project, name=new_name, description=desc)
+    # print(str(pd))
+    updated_pro_name = parsing(str(pd), 'name')
+    # print(updated_pro_name + ' == ' + new_name)
+    if updated_pro_name == new_name:
+        print('Project "' + pro_name + '" sudah diupdate menjadi "' + new_name + '"')
     else:
-        print('Project "' + pro_name + '" bukan domain anda')
+        print('Project "' + pro_name + '" tidak terupdate')
 
 elif argv1 == 'pdelete':
     '''
