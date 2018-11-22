@@ -350,14 +350,34 @@ try:
 except IndexError:
     print('\n$ ks {condition}')
     thisfile = open(__file__, "r")
-    tfc = thisfile.read()
+    tfc = str(thisfile.read())
+    tfc = tfc.replace('      ', ' ')
+    tfc = tfc.replace('     ', ' ')
+    tfc = tfc.replace('    ', ' ')
+    tfc = tfc.replace('   ', ' ')
+    tfc = tfc.replace('  ', ' ')
+    tfc = tfc.replace('\t', ' ')
+    tfc = tfc.replace('\n', '')
     argv = tfc.strip().split('# start argv ---')[2]
-    prints = str(argv).strip().split('if argv1 == \'')
-    # print(prints)
+    prints = argv.strip().split('if argv1 == \'')
     print('\nConditions :')
+    x = 0
+    printsplit_1 = ''
+    printsplit_2 = ''
     for argv_1 in prints:
-        condition = argv_1.strip().split("':")[0]
-        print(condition)
+        split1 = str(argv_1).strip().split('\': \'\'\'')
+        for split2 in split1:
+            if x == 0:
+                # deskripsi
+                printsplit_1 = split2
+                printsplit_1_split = printsplit_1.strip().split("'''")[0]
+            elif x == 1:
+                # kondisi
+                printsplit_2 = split2
+            x += 1
+            if x == 2:
+                x = 0
+        print(f.bold + fg.green + printsplit_2.ljust(10, ' ') + f.reset, f.disable + printsplit_1_split + f.reset)
     print('\n')
 
 
