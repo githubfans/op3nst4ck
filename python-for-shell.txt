@@ -27,6 +27,7 @@ OS_IMAGE_API_VERSION='2'
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client as ks3client
+from neutronclient.v2_0 import client as nt3client
 
 auth = v3.Password(auth_url=OS_AUTH_URL, 
                    username=OS_USERNAME, 
@@ -37,6 +38,7 @@ auth = v3.Password(auth_url=OS_AUTH_URL,
 sess = session.Session(auth=auth)
 sess.get_token()
 ks = ks3client.Client(session=sess)
+nt = nt3client.Client(session=sess)
 
 #--------------------------------------
 

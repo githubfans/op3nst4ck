@@ -1,6 +1,7 @@
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client as ks3client
+from neutronclient.v2_0 import client as nt3client
 
 import json
 import sys
@@ -64,6 +65,10 @@ def get_keystone():
     return ks3client.Client(session=get_sess())
 
 
+def get_neutron():
+    return nt3client.Client(session=get_sess())
+
+
 def jsonBeauty(str):
     '''
     https://stackoverflow.com/questions/9105031/how-to-beautify-json-in-python#32093503
@@ -84,9 +89,9 @@ def customprint(string):
         if re.search('\[\]', str(ul_)) is None:
             ul_ = ul_.replace('[', '[\n')
             ul_ = ul_.replace(']', '\n]')
-        ul_ = ul_.replace('>, <', '>\n\n<')
-        ul_ = ul_.replace('}, {', '}\n\n{')
-        ul_ = ul_.replace(', ', '\n\t')
+        ul_ = ul_.replace('>, <', '>\n,\n<')
+        ul_ = ul_.replace('}, {', '}\n,\n{')
+        ul_ = ul_.replace(', ', '\n,\t')
     return ul_
 
 
@@ -139,23 +144,20 @@ def domainList():
     print('=====================\n')
 
 
-def userList(name=''):
+def userList(cari_name=''):
     print(f.bold + fg.blue + '=====================' + f.reset)
     print(f.bold + fg.blue + 'List User' + f.reset)
+    if cari_name != '':
+        cari_name_ = fg.yellow + f.bold + '"' + cari_name + '"' + f.reset
+        print('name = ' + cari_name_)
     print(f.bold + fg.blue + '---------------------' + f.reset)
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     UserRC_username = get_var('OS_USERNAME')
     print('USERNAME'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(15, ' '), 'PROJECT'.ljust(15, ' '), 'DESC.'.ljust(35, ' '), 'CREATOR.'.ljust(35, ' '))
     if is_admin(UserRC_username):
-        if name != '':
-            getuserlist = ks.users.list(name=name)
-        else:
-            getuserlist = ks.users.list()
+        getuserlist = ks.users.list()
     else:
-        if name != '':
-            getuserlist = ks.users.list(name=name, domain=UserRC_domain_id)
-        else:
-            getuserlist = ks.users.list(domain=UserRC_domain_id)
+        getuserlist = ks.users.list(domain=UserRC_domain_id)
     for data in getuserlist:
         json_str = json.dumps(data.to_dict())
         resp = json.loads(json_str)
@@ -180,7 +182,12 @@ def userList(name=''):
             description = resp['description'].ljust(35, ' ')
         else:
             description = ''
-        print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), getproject.ljust(15, ' '), description, createdby)
+
+        if name != '':
+            if re.search(cari_name, resp['name']):
+                print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), getproject.ljust(15, ' '), description, createdby)
+        else:
+            print(f.bold + fg.green + resp['name'].ljust(15, ' ') + f.reset, resp['id'].ljust(35, ' '), getdomain.ljust(15, ' '), getproject.ljust(15, ' '), description, createdby)
     print('=====================\n')
 
 
@@ -190,6 +197,7 @@ def projectList(domain=''):
     print(f.bold + fg.blue + '---------------------' + f.reset)
     print('PROJECT'.ljust(15, ' '), 'ID'.ljust(35, ' '), 'DOMAIN'.ljust(15, ' '), 'DESC.'.ljust(35, ' '), 'CREATOR.'.ljust(35, ' '))
     UserRC_username = get_var('OS_USERNAME')
+    ks = get_keystone()
     if is_admin(UserRC_username):
         if domain != '':
             pl = ks.projects.list(domain=domain)
@@ -264,6 +272,60 @@ def roleList():
             print('domain :', getdomain)
             print('\n')
     print('=====================\n')
+
+
+def networkList(cari_name=''):
+
+    print(f.bold + fg.blue + '=====================' + f.reset)
+    print(f.bold + fg.blue + 'List Network' + f.reset)
+    if cari_name != '':
+        cari_name_ = fg.yellow + f.bold + '"' + cari_name + '"' + f.reset
+        print('name = ' + cari_name_)
+    print(f.bold + fg.blue + '---------------------' + f.reset)
+    ks = get_keystone()
+    nt = get_neutron()
+    netlist = nt.list_networks()
+    jdumps = json.dumps(netlist, indent=4, sort_keys=True)
+    jloads = json.loads(jdumps)
+    print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
+    for data in jloads['networks']:
+        if len(data['project_id']) == 32:
+            getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
+        else:
+            getproject = data['project_id'] + '(?)'
+        if cari_name != '':
+            if re.search(cari_name, data['name']):
+                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+        else:
+            print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+
+
+def routerList(cari_name=''):
+
+    print(f.bold + fg.blue + '=====================' + f.reset)
+    print(f.bold + fg.blue + 'List Router' + f.reset)
+    if cari_name != '':
+        cari_name_ = fg.yellow + f.bold + '"' + cari_name + '"' + f.reset
+        print('name = ' + cari_name_)
+    print(f.bold + fg.blue + '---------------------' + f.reset)
+    ks = get_keystone()
+    nt = get_neutron()
+    netlist = nt.list_routers()
+    jdumps = json.dumps(netlist, indent=4, sort_keys=True)
+    jloads = json.loads(jdumps)
+    # print(jloads)
+    print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
+    for data in jloads['routers']:
+        # print(data)
+        if len(data['project_id']) == 32:
+            getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
+        else:
+            getproject = data['project_id'] + '(?)'
+        if cari_name != '':
+            if re.search(cari_name, data['name']):
+                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+        else:
+            print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
 
 
 def is_admin(username):
@@ -382,6 +444,7 @@ except IndexError:
 
 
 # start argv ---
+
 if argv1 == 'rc':
     '''
     source login dari file rc
@@ -554,7 +617,10 @@ elif argv1 == 'ulist':
     print('\n-----------------\nUSER LIST\n------------------\n')
     UserRC_domain_id = get_var('OS_PROJECT_DOMAIN_NAME')
     ks = get_keystone()
-    name = input('Cari Nama user : ')
+    try:
+        name = sys.argv[2]
+    except IndexError:
+        name = input('Cari nama user : ')
     print('Tunggu...')
     # if name is None or name == '':
     #     ul = ks.users.list(domain=UserRC_domain_id)
@@ -562,7 +628,7 @@ elif argv1 == 'ulist':
     #     ul = ks.users.list(name=name, domain=UserRC_domain_id)
     # print(toJSON(ul))
     # print('Jum. data : {0}' . format(len(ul)))
-    userList(name=name)
+    userList(cari_name=name)
 
 elif argv1 == 'ucreate':
     '''
@@ -968,3 +1034,118 @@ elif argv1 == 'rgrant':
     keystoneauth1.exceptions.http.Forbidden: Project 1c9f9000989b41939b18f670a8792bd8 must be in the same domain as the role 58451c34b78648caad45e6f9bf5f5191 being assigned. (HTTP 403) (Request-ID: req-9ce372f1-df24-4430-97ce-5e114adb237f)
 
     '''
+
+
+# NEUTRON
+
+elif argv1 == 'nlist':
+    '''
+    network list
+    '''
+
+    try:
+        cari_name = sys.argv[2]
+    except IndexError:
+        cari_name = input('Cari nama network (kosongkan = semua nama) : ')
+    networkList(cari_name)
+
+elif argv1 == 'ncreate':
+    '''
+    create network
+    '''
+    nt = get_neutron()
+    UserRC_username = get_var('OS_USERNAME')
+
+    name = ''
+    n = 0
+    networks = ''
+    while name == '' or len(name) < 5 or len(networks['networks']) > 0:
+        name = input('Nama network (min. 5 hurup) : ')
+        networks = nt.list_networks(name=name)
+        lennet = len(networks['networks'])
+        if lennet > 0:
+            print('Nama network "' + name + '" sudah ada.')
+        n += 1
+        if n >= 5:
+            exit('Batal bikin network.')
+
+    if is_admin(UserRC_username):
+        projectList()
+    else:
+        projectList(domain=UserRC_domain_id)
+
+    project = ''
+    n = 0
+    while len(project) != 32:
+        project = input('Pilih id project : ')
+        n += 1
+        if n >= 5:
+            exit('Batal bikin network.')
+
+    if name != '' and project != '':
+        network = {"name": name, "admin_state_up": True, "description": "dibikin via " + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}
+        # print(network)
+        result = nt.create_network({'network': network})
+        j = json.dumps(result, indent=4)
+        jl = json.loads(j)
+        if name == jl['network']['name'] and project == jl['network']['project_id']:
+            print('Network baru ' + f.bold + fg.green + name + f.reset + ' sudah jadi.')
+            networkList(cari_name=name)
+        else:
+            print(f.red + 'Network baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
+
+elif argv1 == 'rolist':
+    '''
+    router list
+    '''
+
+    try:
+        cari_name = sys.argv[2]
+    except IndexError:
+        cari_name = input('Cari nama router (kosongkan = semua nama) : ')
+    routerList(cari_name)
+
+elif argv1 == 'rocreate':
+    '''
+    create router
+    '''
+    nt = get_neutron()
+    UserRC_username = get_var('OS_USERNAME')
+
+    name = ''
+    n = 0
+    routers = ''
+    while name == '' or len(name) < 5 or len(routers['routers']) > 0:
+        name = input('Nama router (min. 5 hurup) : ')
+        routers = nt.list_routers(name=name)
+        lennet = len(routers['routers'])
+        if lennet > 0:
+            print('Nama router "' + name + '" sudah ada.')
+        n += 1
+        if n >= 5:
+            exit('Batal bikin router.')
+
+    if is_admin(UserRC_username):
+        projectList()
+    else:
+        projectList(domain=UserRC_domain_id)
+
+    project = ''
+    n = 0
+    while len(project) != 32:
+        project = input('Pilih id project : ')
+        n += 1
+        if n >= 5:
+            exit('Batal bikin router.')
+
+    if name != '' and project != '':
+        router = {"name": name, "admin_state_up": True, "description": "dibikin via " + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}
+        # print(router)
+        result = nt.create_router({'router': router})
+        j = json.dumps(result, indent=4)
+        jl = json.loads(j)
+        if name == jl['router']['name'] and project == jl['router']['project_id']:
+            print('router baru ' + f.bold + fg.green + name + f.reset + ' sudah jadi.')
+            routerList(cari_name=name)
+        else:
+            print(f.red + 'router baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
