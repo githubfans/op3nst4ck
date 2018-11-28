@@ -4,17 +4,17 @@ OS_USER_DOMAIN_NAME='Default'
 OS_PROJECT_NAME='admin'
 OS_USERNAME='admin'
 
-# AJI2 =======================================
-OS_PROJECT_DOMAIN_NAME='449309895ba3410cb0d565bba1342b93'
-OS_USER_DOMAIN_NAME='domain.aji'
-OS_PROJECT_NAME='project.aji'
-OS_USERNAME='aji2'
-
 # AJI =======================================
 OS_PROJECT_DOMAIN_NAME='default'
 OS_USER_DOMAIN_NAME='Default'
 OS_PROJECT_NAME='aji'
 OS_USERNAME='aji'
+
+# AJI2 =======================================
+OS_PROJECT_DOMAIN_NAME='449309895ba3410cb0d565bba1342b93'
+OS_USER_DOMAIN_NAME='domain.aji'
+OS_PROJECT_NAME='project.aji'
+OS_USERNAME='aji2'
 
 
 OS_PASSWORD='M0nalisa'
@@ -28,6 +28,8 @@ from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client as ks3client
 from neutronclient.v2_0 import client as nt3client
+from novaclient.v2 import client as nv2client
+import glanceclient.v2.client as glclient
 
 auth = v3.Password(auth_url=OS_AUTH_URL, 
                    username=OS_USERNAME, 
@@ -39,9 +41,55 @@ sess = session.Session(auth=auth)
 sess.get_token()
 ks = ks3client.Client(session=sess)
 nt = nt3client.Client(session=sess)
-
+nv = nv2client.client.Client(version='2.0', session=sess)
+gl =  glclient.Client(session=sess)
 #--------------------------------------
 
+
+
+
+
+import os
+import subprocess
+os.system('curl -i -X PATCH -H "X-Auth-Token: gAAAAABb_LATazX3_vX8zJI_OXMIYNd5oz3DX4JDoiXpKthfv1H1_2YUxOOsbqleFCWR8_K-5CBreYiClGJcA-U775wUFE2ku-LE1k04ufaAae3mAF1bha4cDIuUV3OH9WXGH8_C9nLttNrexcHDCAM4vIE63p4JbHRKWI6zPlVX9dpP61YYlnY" -H "Content-Type: application/json" http://rocky-controller.jcamp.net:8774/v2/images/')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#--------------------------------------
 
 
 

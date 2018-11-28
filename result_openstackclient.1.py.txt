@@ -1,0 +1,319 @@
+(envOS)  ✘ ★  ~/Documents/openstack2   master±  os nlist
+Cari nama network (kosongkan = semua nama) : 
+=====================
+List Network
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajinet2                   057b2758-09a5-4af7-9ce3-4dffd9273ab6     aji             ACTIVE                                        
+ajinet-via-ntclient-4     263feefa-4f97-44b8-9b2c-5603972852ee     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+cobanetwork3              2c656fa0-0dc9-4148-80a2-a428b2bfb1f8     irvan2          ACTIVE                                        
+Irvan_Network             4b73b027-0231-42e8-9253-153f342119d9     irvan           ACTIVE                                        
+ajinet-via-ntclient-2     53b2bdad-c00b-4562-bae4-8f1821112216     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+ajinet-via-ntclient-5     5441ba23-0a96-40ce-bca2-6d750187fe3d     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+admin-int                 6ef3c4b9-754e-47a2-8356-66d7b672a21c     admin           ACTIVE                                        
+ajinet-via-ntclient-1     71cd19e8-0b9c-423c-ac6e-63028e12acce     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+irvan_network2            7c6f159c-bcb6-4712-8c9f-43d4edf6977f     irvan           ACTIVE                                        
+cobanetwork2              a30b33d6-de34-4954-8445-ded87276cc59     irvan2          ACTIVE                                        
+ajinet                    a3a60875-f2b6-4e7c-9959-2d5529da869b     aji             ACTIVE                                        
+ajinet-via-ntclient-3     a798f5ef-26a9-4c26-aa94-9485ae3a23b7     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+ext-net                   d10dd06a-0425-49eb-a8ba-85abf55ac0f5     admin           ACTIVE                                        
+ajitest1                  f26ddb26-d8e4-489a-947a-e4a7b8b5f63f     aji             ACTIVE                                        
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os nlist aji
+=====================
+List Network
+name = "aji"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajinet2                   057b2758-09a5-4af7-9ce3-4dffd9273ab6     aji             ACTIVE                                        
+ajinet-via-ntclient-4     263feefa-4f97-44b8-9b2c-5603972852ee     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+ajinet-via-ntclient-2     53b2bdad-c00b-4562-bae4-8f1821112216     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+ajinet-via-ntclient-5     5441ba23-0a96-40ce-bca2-6d750187fe3d     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+ajinet-via-ntclient-1     71cd19e8-0b9c-423c-ac6e-63028e12acce     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+ajinet                    a3a60875-f2b6-4e7c-9959-2d5529da869b     aji             ACTIVE                                        
+ajinet-via-ntclient-3     a798f5ef-26a9-4c26-aa94-9485ae3a23b7     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+ajitest1                  f26ddb26-d8e4-489a-947a-e4a7b8b5f63f     aji             ACTIVE                                        
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os nlist    
+Cari nama network (kosongkan = semua nama) : irvan
+=====================
+List Network
+name = "irvan"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+irvan_network2            7c6f159c-bcb6-4712-8c9f-43d4edf6977f     irvan           ACTIVE                                        
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os nlist
+Cari nama network (kosongkan = semua nama) : Irvan
+=====================
+List Network
+name = "Irvan"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+Irvan_Network             4b73b027-0231-42e8-9253-153f342119d9     irvan           ACTIVE  
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os ncreate
+Nama network (min. 5 hurup) : ajinet-via-ntclient-5
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN          DESC.                               CREATOR.                           
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default         Bootstrap project for initializing the cloud. 
+project5.aji    608a4c03ae424d279fcde53ede5d446c    Default         dibikin pake api3.py                aji                 
+project4.aji    3ded970a01204346ab5409d64b774231    Default         dibikin pake api3.py                
+service         49eb39871fb148a29fc2df713eeab655    Default         Service Project                     
+myproject       49b51908c2424ce28f5ac922be2da36c    Default         Demo Project                        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default         aji project                         
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default         irvan project                       
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default                                             
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default                                             
+projectrosalina ba0fcb3be0d54a47b3439efbf474a0e7    Rosalina                                            
+project4-2.aji  d4b71c5014f143cb8b57ebb07cfc5f3f    domain4.aji     dibikin pake openstackclient.1.py   aji2                
+kaliputih.proj  1f027bc9f9c74b2aa173c3c97e853215    kaliputih.dom   Project nya domain kaliputih        
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji      dibikin pake keystoneclient         
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji      dibikin di dashboard                
+irvan2          a131ae109e6c4927855b0e316410e444    Default                                             
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default                                             
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default         oke                                 
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji      dibikin pake api3.py                aji                 
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default         update...                           
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default         esakjfue                            
+project3.aji    fd104beb39854ce7a8f55808c2443cb3    domain3.aji     dibikin pake api3.py                aji                 
+=====================
+
+Pilih id project : 56a2cb6964d94577af24a7aa0269f25e
+Network baru ajinet-via-ntclient-5 sudah jadi.
+=====================
+List Network
+name = "ajinet-via-ntclient-5"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajinet-via-ntclient-5     5441ba23-0a96-40ce-bca2-6d750187fe3d     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os rolist aji 
+=====================
+List Router
+name = "aji"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajirouter3                1daac924-19de-4fac-87c7-2f927b5ec895     aji             ACTIVE                                        
+router3.aji               2da4c436-b2cd-44d3-99d3-e7c12dde7a5f     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+ajirouter                 43753e83-d9f9-4ca8-8cc6-b872595edad5     aji             ACTIVE                                        
+router.aji                5b448ea6-309e-4634-bda7-bd3f7d27f5c8     project.aji     ACTIVE     dibikin via python shell. createdby:aji2"
+ajirouter2                9cba1a13-99ee-45b7-a930-a6b19285e155     aji             ACTIVE                                        
+router4.aji               e2b10a07-ede1-456b-aa86-80dca09d9c1e     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+router2.aji               f2f15ae1-5604-477a-8bdb-140e16b2d214     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os rolist    
+Cari nama router (kosongkan = semua nama) : aji
+=====================
+List Router
+name = "aji"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajirouter3                1daac924-19de-4fac-87c7-2f927b5ec895     aji             ACTIVE                                        
+router3.aji               2da4c436-b2cd-44d3-99d3-e7c12dde7a5f     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+ajirouter                 43753e83-d9f9-4ca8-8cc6-b872595edad5     aji             ACTIVE                                        
+router.aji                5b448ea6-309e-4634-bda7-bd3f7d27f5c8     project.aji     ACTIVE     dibikin via python shell. createdby:aji2"
+ajirouter2                9cba1a13-99ee-45b7-a930-a6b19285e155     aji             ACTIVE                                        
+router4.aji               e2b10a07-ede1-456b-aa86-80dca09d9c1e     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+router2.aji               f2f15ae1-5604-477a-8bdb-140e16b2d214     project.aji     ACTIVE     dibikin via python shell. createdby:aji2
+
+
+(envOS)  ★  ~/Documents/openstack2   master±  os rocreate
+Nama router (min. 5 hurup) : router4.aji
+Nama router "router4.aji" sudah ada.
+Nama router (min. 5 hurup) : router3.aji            
+Nama router "router3.aji" sudah ada.
+Nama router (min. 5 hurup) : router5.aji            
+=====================
+List Project
+---------------------
+PROJECT         ID                                  DOMAIN          DESC.                               CREATOR.                           
+admin           8c3ff5ffe6794b1db42fca2d8fc45104    Default         Bootstrap project for initializing the cloud. 
+project5.aji    608a4c03ae424d279fcde53ede5d446c    Default         dibikin pake api3.py                aji                 
+project4.aji    3ded970a01204346ab5409d64b774231    Default         dibikin pake api3.py                
+service         49eb39871fb148a29fc2df713eeab655    Default         Service Project                     
+myproject       49b51908c2424ce28f5ac922be2da36c    Default         Demo Project                        
+aji             c0b89f614b5a457cb5acef8fe8c2b320    Default         aji project                         
+irvan           82f25d549c774d1eaf9c0b9b45079e7b    Default         irvan project                       
+Semarang        6c39ed979c504f62ad406c946292ff3d    Default                                             
+jajalan         f4aa63dc85294d5abe97010d7ae057e0    Default                                             
+projectrosalina ba0fcb3be0d54a47b3439efbf474a0e7    Rosalina                                            
+project4-2.aji  d4b71c5014f143cb8b57ebb07cfc5f3f    domain4.aji     dibikin pake openstackclient.1.py   aji2                
+kaliputih.proj  1f027bc9f9c74b2aa173c3c97e853215    kaliputih.dom   Project nya domain kaliputih        
+project.aji     56a2cb6964d94577af24a7aa0269f25e    domain.aji      dibikin pake keystoneclient         
+test.aji        696c0d55ce374ab581ae17fd269e776f    domain.aji      dibikin di dashboard                
+irvan2          a131ae109e6c4927855b0e316410e444    Default                                             
+project.aji     1c9f9000989b41939b18f670a8792bd8    Default                                             
+irvan4          6bd9cebb746c420783039ce7606f8aa1    Default         oke                                 
+project2.aji    33adf9c09bab4d4e84371879ce6a2839    domain.aji      dibikin pake api3.py                aji                 
+irvan3          a5406b8f8beb4478917f99b18d4dea48    Default         update...                           
+projectirvan5   986829e11caf4bb3a27d0eab176db5d2    Default         esakjfue                            
+project3.aji    fd104beb39854ce7a8f55808c2443cb3    domain3.aji     dibikin pake api3.py                aji                 
+=====================
+
+Pilih id project : 56a2cb6964d94577af24a7aa0269f25e
+router baru router5.aji sudah jadi.
+=====================
+List Router
+name = "router5.aji"
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+router5.aji               4827414e-ded9-405f-9b14-6f0ba93ed47c     project.aji     ACTIVE     dibikin via openstackclient.1.py. createdby:aji2
+
+
+
+
+
+
+(envOS)  ✘ ★  ~/Documents/openstack2   master±  os routerupdate
+
+-----------------
+UPDATE ROUTER
+------------------
+
+
++ ip_address: 103.30.145.0/24
++ sub-ext-net(ready)
++ ext-net(ready)
+
+=====================
+List Router
+---------------------
+NAME                      ID                                       EXT-IP          NET.                 PROJECT         STATUS.   
+ajirouter3                1daac924-19de-4fac-87c7-2f927b5ec895     103.30.145.213  ext-net              aji             ACTIVE    
+router3.aji               2da4c436-b2cd-44d3-99d3-e7c12dde7a5f     (not set)                            project.aji     ACTIVE    
+ajirouter                 43753e83-d9f9-4ca8-8cc6-b872595edad5     103.30.145.206  ext-net              aji             ACTIVE    
+router5.aji               4827414e-ded9-405f-9b14-6f0ba93ed47c     (not set)                            project.aji     ACTIVE    
+router.aji                5b448ea6-309e-4634-bda7-bd3f7d27f5c8     103.30.145.220  ext-net              project.aji     ACTIVE    
+Irvan_Router2             656de5e6-5fad-4c15-b033-783b95db2344     103.30.145.214  ext-net              irvan           ACTIVE    
+admin-ro                  725cc5fc-e7c8-49d3-bfeb-a3121fe95be7     103.30.145.208  ext-net              admin           ACTIVE    
+cobaroute                 8450aa50-6660-4df5-8adf-be86558fdd0b     103.30.145.212  ext-net              irvan2          ACTIVE    
+ajirouter2                9cba1a13-99ee-45b7-a930-a6b19285e155     103.30.145.210  ext-net              aji             ACTIVE    
+cobaroute2                af42f18c-32e8-4ad6-81db-36a71108f33c     103.30.145.205  ext-net              irvan2          ACTIVE    
+Irvan_Router              bc1d73e5-d9f2-4694-87ee-fd28fd452afb     103.30.145.204  ext-net              irvan           ACTIVE    
+router4.aji               e2b10a07-ede1-456b-aa86-80dca09d9c1e     (not set)                            project.aji     ACTIVE    
+router2.aji               f2f15ae1-5604-477a-8bdb-140e16b2d214     103.30.145.219  ext-net              project.aji     ACTIVE    
+Pilih id router : 2da4c436-b2cd-44d3-99d3-e7c12dde7a5f
+Lengkapi ip : 103.30.145.221
+(envOS)  ★  ~/Documents/openstack2   master±  os routerupdate
+
+-----------------
+UPDATE ROUTER
+------------------
+
+
++ ip_address: 103.30.145.0/24
++ sub-ext-net(ready)
++ ext-net(ready)
+
+=====================
+List Router
+---------------------
+Traceback (most recent call last):
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connection.py", line 159, in _new_conn
+    (self._dns_host, self.port), self.timeout, **extra_kw)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/util/connection.py", line 80, in create_connection
+    raise err
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/util/connection.py", line 70, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connectionpool.py", line 600, in urlopen
+    chunked=chunked)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connectionpool.py", line 354, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.6/http/client.py", line 1239, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1285, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1234, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1026, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 964, in send
+    self.connect()
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connection.py", line 181, in connect
+    conn = self._new_conn()
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connection.py", line 168, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7f75e2a331d0>: Failed to establish a new connection: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/requests/adapters.py", line 449, in send
+    timeout=timeout
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/connectionpool.py", line 638, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/urllib3/util/retry.py", line 398, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='rocky-controller.jcamp.net', port=5000): Max retries exceeded with url: /v3/auth/tokens (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f75e2a331d0>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 903, in _send_request
+    resp = self.session.request(method, url, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/requests/sessions.py", line 533, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/requests/sessions.py", line 646, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/requests/adapters.py", line 516, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='rocky-controller.jcamp.net', port=5000): Max retries exceeded with url: /v3/auth/tokens (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f75e2a331d0>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "openstackclient.1.py", line 1394, in <module>
+    routerList()
+  File "openstackclient.1.py", line 351, in routerList
+    netlist = nt.list_routers()
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 877, in list_routers
+    **_params)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 369, in list
+    for r in self._pagination(collection, path, **params):
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 384, in _pagination
+    res = self.get(path, params=params)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 354, in get
+    headers=headers, params=params)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 331, in retry_request
+    headers=headers, params=params)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/v2_0/client.py", line 282, in do_request
+    headers=headers)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/client.py", line 342, in do_request
+    self._check_uri_length(url)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/client.py", line 335, in _check_uri_length
+    uri_len = len(self.endpoint_url) + len(url)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/neutronclient/client.py", line 349, in endpoint_url
+    return self.get_endpoint()
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/adapter.py", line 247, in get_endpoint
+    return self.session.get_endpoint(auth or self.auth, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 1113, in get_endpoint
+    return auth.get_endpoint(self, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/identity/base.py", line 380, in get_endpoint
+    allow_version_hack=allow_version_hack, **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/identity/base.py", line 271, in get_endpoint_data
+    service_catalog = self.get_access(session).service_catalog
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/identity/base.py", line 134, in get_access
+    self.auth_ref = self.get_auth_ref(session)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/identity/v3/base.py", line 178, in get_auth_ref
+    authenticated=False, log=False, **rkwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 1019, in post
+    return self.request(url, 'POST', **kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 814, in request
+    resp = send(**kwargs)
+  File "/home/sysadmin/Documents/openstack2/envOS/lib/python3.6/site-packages/keystoneauth1/session.py", line 919, in _send_request
+    raise exceptions.ConnectFailure(msg)
+keystoneauth1.exceptions.connection.ConnectFailure: Unable to establish connection to http://rocky-controller.jcamp.net:5000/v3/auth/tokens: HTTPConnectionPool(host='rocky-controller.jcamp.net', port=5000): Max retries exceeded with url: /v3/auth/tokens (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f75e2a331d0>: Failed to establish a new connection: [Errno 111] Connection refused',))
