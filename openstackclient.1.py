@@ -502,14 +502,14 @@ def nextName_network():
     num = 0
     for data in jloads['networks']:
         if re.search('network', data['name']):
-            if re.search('.aji', data['name']):
+            if re.search('.' + get_var('OS_USERNAME'), data['name']):
                 num += 1
 
     if num > 0:
         num = num + 1
         next_name = 'network' + str(num) + '.' + get_var('OS_USERNAME')
     else:
-        next_name = 'network.aji'
+        next_name = 'network.' + get_var('OS_USERNAME')
 
     return next_name
 
@@ -522,14 +522,14 @@ def nextName_subnet():
     num = 0
     for data in jloads['subnets']:
         if re.search('subnet', data['name']):
-            if re.search('.aji', data['name']):
+            if re.search('.' + get_var('OS_USERNAME'), data['name']):
                 num += 1
 
     if num > 0:
         num = num + 1
         next_name = 'subnet' + str(num) + '.' + get_var('OS_USERNAME')
     else:
-        next_name = 'subnet.aji'
+        next_name = 'subnet.' + get_var('OS_USERNAME')
 
     return next_name
 
@@ -542,14 +542,14 @@ def nextName_router():
     num = 0
     for data in jloads['routers']:
         if re.search('router', data['name']):
-            if re.search('.aji', data['name']):
+            if re.search('.' + get_var('OS_USERNAME'), data['name']):
                 num += 1
 
     if num > 0:
         num = num + 1
         next_name = 'router' + str(num) + '.' + get_var('OS_USERNAME')
     else:
-        next_name = 'router.aji'
+        next_name = 'router.' + get_var('OS_USERNAME')
 
     return next_name
 
@@ -562,15 +562,35 @@ def nextName_port():
     num = 0
     for data in jloads['ports']:
         if re.search('port', data['name']):
-            if re.search('.aji', data['name']):
+            if re.search('.' + get_var('OS_USERNAME'), data['name']):
                 num += 1
 
     if num > 0:
         num = num + 1
         next_name = 'port' + str(num) + '.' + get_var('OS_USERNAME')
     else:
-        next_name = 'port.aji'
+        next_name = 'port.' + get_var('OS_USERNAME')
 
+    return next_name
+
+
+def nextName_instance():
+    list_ = nv.servers.list()
+    if len(list_) > 0:
+        jdumps = json.dumps(list_, indent=4, sort_keys=True)
+        jloads = json.loads(jdumps)
+        num = 0
+        for data in jloads['server']:
+            if re.search('instance', data['name']):
+                if re.search('.' + get_var('OS_USERNAME'), data['name']):
+                    num += 1
+        if num > 0:
+            num = num + 1
+            next_name = 'instance' + str(num) + '.' + get_var('OS_USERNAME')
+        else:
+            next_name = 'instance.' + get_var('OS_USERNAME')
+    else:
+        next_name = 'instance.' + get_var('OS_USERNAME')
     return next_name
 
 
@@ -620,6 +640,25 @@ def availableIpPublic(ipprefix, inputstr):
             break
         else:
             found = 0
+    return found
+
+
+def get_availableIpPublic(ipprefix):
+    # ipprefix : 111.111.111.
+    ip_avail = subprocess.check_output('nmap -sP ' + ipprefix + '0/24', shell=True)
+    x = str(ip_avail).strip().split('WIB')
+    # print(x[1])
+    x = str(x[1]).strip().split('103.30.145.')
+    # print(list(x))
+    ips = 171
+    found = False
+    for xx in list(x):
+        if re.search('Host is up', xx):
+            ips += 1
+            ip_suffix = str(xx).strip().split(")\\nHost ")[0]
+            if ips != ip_suffix:
+                found = ipprefix + str(ips)
+                break
     return found
 
 
@@ -761,7 +800,7 @@ argv1 = ''
 try:
     argv1 = sys.argv[1]
 except IndexError:
-    print('\n$ ks {condition}')
+    print('\n$ os {condition}')
     thisfile = open(__file__, "r")
     tfc = str(thisfile.read())
     tfc = tfc.replace('      ', ' ')
@@ -1781,17 +1820,17 @@ elif argv1 == 'servercreate':
 
     nv = get_nova()
 
-    name = ''
-    n = 0
-    while name == '' or len(name) < 5 or len(servers) > 0:
-        name = input('Nama instance (min. 5 hurup) : ')
-        servers = nv.servers.list(search_opts={'name': name})
-        if len(servers) > 0:
-            print('Nama instance "' + name + '" sudah ada.')
-        n += 1
-        if n >= 5:
-            exit('Batal bikin instance.')
-
+    # name = ''
+    # n = 0
+    # while name == '' or len(name) < 5 or len(servers) > 0:
+    #     name = input('Nama instance (min. 5 hurup) : ')
+    #     servers = nv.servers.list(search_opts={'name': name})
+    #     if len(servers) > 0:
+    #         print('Nama instance "' + name + '" sudah ada.')
+    #     n += 1
+    #     if n >= 5:
+    #         exit('Batal bikin instance.')
+    name = nextName_instance()
     # imageList()
     # image = ''
     # n = 0
@@ -1874,6 +1913,7 @@ elif argv1 == 'createnetcomplete':
         + port
     '''
     nt = get_neutron()
+    nv = get_nova()
     UserRC_username = get_var('OS_USERNAME')
     print('\n\n\n')
 
@@ -1931,15 +1971,20 @@ elif argv1 == 'createnetcomplete':
                     break
             subnet_id = subnet_output['id']
             # print('Created subnet %s' % subnet)
-        finally:
-            # print("Execution completed : network + subnet")
             subnetList(cari_name=subnet_name)
+        finally:
+            print("Execution completed : network + subnet")
 
         try:
 
             router_name = nextName_router()
             print('\n\n' + fg.yellow + 'Bikin router "' + router_name + '"' + f.reset)
             nt.format = 'json'
+            ip_add = ''
+            print('\n\n' + fg.lightgrey + 'Cari available ip...."' + router_name + '"' + f.reset)
+            while ip_add is False or ip_add == '':
+                ip_add = get_availableIpPublic(ipprefix='103.30.145.')
+            print('\n\n' + fg.lightgrey + 'available ip : "' + ip_add + '"' + f.reset)
             request = {'router':
                 {
                     "name": router_name,
@@ -1947,14 +1992,14 @@ elif argv1 == 'createnetcomplete':
                     "description": "dibikin via " + __file__ + ". createdby:" + UserRC_username,
                     "project_id": project,
                     "tenant_id": project,
-                    # "external_gateway_info": {
-                    #     "enable_snat": "True",
-                    #     "external_fixed_ips": [{
-                    #         "ip_address": ip_add,
-                    #         "subnet_id": subnet_id
-                    #     }],
-                    #     "network_id": network_id
-                    # }
+                    "external_gateway_info": {
+                        "enable_snat": "True",
+                        "external_fixed_ips": [{
+                            "ip_address": ip_add,
+                            "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
+                        }],
+                        "network_id": "d10dd06a-0425-49eb-a8ba-85abf55ac0f5"
+                    }
                 }
             }
             router = nt.create_router(request)
@@ -1975,9 +2020,27 @@ elif argv1 == 'createnetcomplete':
 
             response = nt.create_port(body=body_value)
             # print(response)
-        finally:
-            # print("Execution completed : + router + port")
             portList(cari_name=port_name)
+        finally:
+            print("Execution completed : + router + port")
+
+    instance_name = nextName_instance()
+    print('\n\n' + fg.yellow + 'Bikin network "' + instance_name + '"' + f.reset)
+    image = '82189ef1-2c20-475c-9d40-325eb567df56'
+    flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
+    network = network_id
+    if image != '' and flavor != '' and network != '':
+        try:
+            create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}])
+            # , security_groups='4bed540c-266d-4cc2-8225-3e02ccd89ff1'
+            print(create_instance)
+            print(type(create_instance))
+            nv_slist = nv.servers.list()
+            print(nv_slist)
+        except IndexError:
+            print('create instance gagal !')
+    else:
+        print('Periksa inputan !')
 
     print('\n\n\n')
 
@@ -1985,3 +2048,7 @@ elif argv1 == 'flipcreate':
     '''
     create flating ip
     '''
+
+
+elif argv1 == 'test':
+    get_availableIpPublic('103.30.145.') 
