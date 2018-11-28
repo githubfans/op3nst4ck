@@ -1,0 +1,155 @@
+{
+    "networks": [
+        {
+            "admin_state_up": true,
+            "availability_zone_hints": [],
+            "availability_zones": [
+                "nova"
+            ],
+            "created_at": "2018-10-23T09:14:19Z",
+            "description": "",
+            "id": "a3a60875-f2b6-4e7c-9959-2d5529da869b",
+            "ipv4_address_scope": null,
+            "ipv6_address_scope": null,
+            "mtu": 1500,
+            "name": "ajinet",
+            "port_security_enabled": true,
+            "project_id": "c0b89f614b5a457cb5acef8fe8c2b320",
+            "provider:network_type": "vlan",
+            "provider:physical_network": "viavlan",
+            "provider:segmentation_id": 2019,
+            "revision_number": 2,
+            "router:external": false,
+            "shared": false,
+            "status": "ACTIVE",
+            "subnets": [
+                "23efbf8b-3288-4820-b7f7-f86fd6573305"
+            ],
+            "tags": [],
+            "tenant_id": "c0b89f614b5a457cb5acef8fe8c2b320",
+            "updated_at": "2018-10-23T09:14:20Z"
+        }
+    ]
+}
+
+
+network = {"name": "ajinet-via-ntclient-1", "admin_state_up": True, "description": "dibikin via python shell. createdby:aji2", "project_id": "56a2cb6964d94577af24a7aa0269f25e", "tenant_id": "56a2cb6964d94577af24a7aa0269f25e"}
+nt.create_network({'network':network})
+networks = nt.list_networks(name='mynetwork')
+print networks.request_ids
+
+router = {'admin_state_up': True, 'description': 'dibikin via python shell. createdby:aji2', 'name': 'router3.aji', 'project_id': '56a2cb6964d94577af24a7aa0269f25e', 'tenant_id': '56a2cb6964d94577af24a7aa0269f25e'}
+cr = nt.create_router({'router':router})
+cl = nt.list_routers(name='router3.aji')
+print(cl.request_ids)
+
+subnets = {"description": "dibikin via python shell. createdby:aji2", "enable_dhcp": "True", "dns_nameservers": ["8.8.8.8"], "allocation_pools": [{"start": "192.168.31.2", "end": "192.168.31.10"}], "gateway_ip": "192.168.31.1", "cidr": "192.168.31.0/24", "name": "subnet-aji", "network_id": "71cd19e8-0b9c-423c-ac6e-63028e12acce", "project_id": "56a2cb6964d94577af24a7aa0269f25e", "tenant_id": "56a2cb6964d94577af24a7aa0269f25e"}
+subnets = {'subnets': [
+{
+    "name": "subnet.aji",
+    "description": "dibikin via python shell. createdby aji2",
+    "enable_dhcp": "True",
+    "dns_nameservers": ["8.8.8.8"],
+    "allocation_pools": [{
+        "start": "192.168.31.2",
+        "end": "192.168.31.5",
+    }],
+    "gateway_ip": "192.168.31.1",
+    "cidr": "192.168.31.0/24",
+    'ip_version': 4, 
+    "network_id": "71cd19e8-0b9c-423c-ac6e-63028e12acce",
+    "project_id": "56a2cb6964d94577af24a7aa0269f25e",
+    "tenant_id": "56a2cb6964d94577af24a7aa0269f25e",
+}
+]}
+cs = nt.create_subnet(body=subnets)
+print(cs)
+ls = nt.list_subnets(name='subnet.aji')
+print(ls)
+
+{
+    'service_types': [], 
+    'description': '', 
+    'enable_dhcp': True, 
+    'tags': [], 
+    'network_id': 'a3a60875-f2b6-4e7c-9959-2d5529da869b', 
+    'tenant_id': 'c0b89f614b5a457cb5acef8fe8c2b320', 
+    'created_at': '2018-10-23T09:14:20Z', 
+    'dns_nameservers': ['8.8.8.8'], 
+    'updated_at': '2018-10-23T09:14:20Z', 
+    'ipv6_ra_mode': None, 
+    'allocation_pools': [{'start': '192.168.11.2', 'end': '192.168.11.10'}], 
+    'gateway_ip': '192.168.11.1', 
+    'revision_number': 0, 
+    'ipv6_address_mode': None, 
+    'ip_version': 4, 
+    'host_routes': [], 
+    'cidr': '192.168.11.0/24', 
+    'project_id': 'c0b89f614b5a457cb5acef8fe8c2b320', 
+    'id': '23efbf8b-3288-4820-b7f7-f86fd6573305', 
+    'subnetpool_id': None, 
+    'name': 'ajisubnet'
+}
+
+
+
+bodyu = { 'router': 
+    {
+        "external_gateway_info": {
+            "enable_snat": "True",
+            "external_fixed_ips": [{
+                "ip_address": "103.30.145.220",
+                "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
+            }],
+            "network_id": "d10dd06a-0425-49eb-a8ba-85abf55ac0f5"
+        }
+    }
+}
+
+ur = nt.update_router(router='5b448ea6-309e-4634-bda7-bd3f7d27f5c8', body=bodyu)
+print(ur)
+
+
+nv_sgr_c = nv.security_group_rules.create(parent_group_id='2b791dcb-080a-4796-ba0d-cf2a6c7203a8', ip_protocol="icmp", from_port=-1, to_port=-1)
+nv_sgr_c = nv.security_group_rules.create(parent_group_id='2b791dcb-080a-4796-ba0d-cf2a6c7203a8', ip_protocol="tcp", from_port=80, to_port=80)
+nv_sgr_c = nv.security_group_rules.create(parent_group_id='2b791dcb-080a-4796-ba0d-cf2a6c7203a8', ip_protocol="tcp", from_port=443, to_port=443)
+
+
+>>> nt.create_floatingip(body={'floatingip':{'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5', 'project_id': '56a2cb6964d94577af24a7aa0269f25e'}})
+{'floatingip': 
+    {
+        'router_id': None, 
+        'status': 'DOWN', 
+        'description': '', 
+        'tags': [], 
+        'tenant_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'created_at': '2018-11-28T09:20:01Z', 
+        'updated_at': '2018-11-28T09:20:01Z', 
+        'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5', 
+        'port_details': None, 
+        'fixed_ip_address': None, 
+        'floating_ip_address': '103.30.145.191', 
+        'revision_number': 0, 
+        'project_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'port_id': None, 
+        'id': '8820068c-ef64-4f46-a5b6-5b1aed4a31a5'
+    }
+}
+
+
+instance = nv.servers.find(name="instance.aji2")
+instance.add_floating_ip(floating_ip='8820068c-ef64-4f46-a5b6-5b1aed4a31a5')
+
+
+
+floatingip = {'floatingip': 
+    {
+        'description': 'via python shell', 
+        'project_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'tenant_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5', 
+        'port_id': '495828fb-d9cb-4734-b7ea-41fa772baaa3', 
+    }
+}
+
+nt.create_floatingip(body=floatingip)

@@ -17,8 +17,8 @@ Flavor interface.
 """
 
 from oslo_utils import strutils
-from six.moves.urllib import parse
 
+from novaclient import api_versions
 from novaclient import base
 from novaclient import exceptions
 from novaclient.i18n import _
@@ -86,6 +86,16 @@ class Flavor(base.Resource):
         """
         return self.manager.delete(self)
 
+    @api_versions.wraps('2.55')
+    def update(self, description=None):
+        """
+        Update the description for this flavor.
+
+        :param description: The description to set on the flavor.
+        :returns: :class:`Flavor`
+        """
+        return self.manager.update(self, description=description)
+
 
 class FlavorManager(base.ManagerWithFind):
     """Manage :class:`Flavor` resources."""
@@ -128,14 +138,11 @@ class FlavorManager(base.ManagerWithFind):
             qparams['sort_dir'] = str(sort_dir)
         if not is_public:
             qparams['is_public'] = is_public
-        qparams = sorted(qparams.items(), key=lambda x: x[0])
-        query_string = "?%s" % parse.urlencode(qparams) if qparams else ""
-
         detail = ""
         if detailed:
             detail = "/detail"
 
-        return self._list("/flavors%s%s" % (detail, query_string), "flavors")
+        return self._list("/flavors%s" % detail, "flavors", filters=qparams)
 
     def get(self, flavor):
         """Get a specific flavor.
@@ -148,7 +155,8 @@ class FlavorManager(base.ManagerWithFind):
     def delete(self, flavor):
         """Delete a specific flavor.
 
-        :param flavor: The ID of the :class:`Flavor` to get.
+        :param flavor: Instance of :class:`Flavor` to delete or ID of the
+                       flavor to delete.
         :returns: An instance of novaclient.base.TupleWithMeta
         """
         return self._delete("/flavors/%s" % base.getid(flavor))
@@ -170,18 +178,25 @@ class FlavorManager(base.ManagerWithFind):
         }
 
     def create(self, name, ram, vcpus, disk, flavorid="auto",
-               ephemeral=0, swap=0, rxtx_factor=1.0, is_public=True):
+               ephemeral=0, swap=0, rxtx_factor=1.0, is_public=True,
+               description=None):
         """Create a flavor.
 
         :param name: Descriptive name of the flavor
         :param ram: Memory in MB for the flavor
         :param vcpus: Number of VCPUs for the flavor
-        :param disk: Size of local disk in GB
+        :param disk: Size of local disk in GiB
         :param flavorid: ID for the flavor (optional). You can use the reserved
                          value ``"auto"`` to have Nova generate a UUID for the
                          flavor in cases where you cannot simply pass ``None``.
+        :param ephemeral: Ephemeral disk space in GiB.
         :param swap: Swap space in MB
         :param rxtx_factor: RX/TX factor
+        :param is_public: Whether or not the flavor is public.
+        :param description: A free form description of the flavor.
+                            Limited to 65535 characters in length.
+                            Only printable characters are allowed.
+                            (Available starting with microversion 2.55)
         :returns: :class:`Flavor`
         """
 
@@ -219,7 +234,28 @@ class FlavorManager(base.ManagerWithFind):
         except Exception:
             raise exceptions.CommandError(_("is_public must be a boolean."))
 
+        supports_description = api_versions.APIVersion('2.55')
+        if description and self.api_version < supports_description:
+            raise exceptions.UnsupportedAttribute('description', '2.55')
+
         body = self._build_body(name, ram, vcpus, disk, flavorid, swap,
                                 ephemeral, rxtx_factor, is_public)
+        if description:
+            body['flavor']['description'] = description
 
         return self._create("/flavors", body, "flavor")
+
+    @api_versions.wraps('2.55')
+    def update(self, flavor, description=None):
+        """
+        Update the description of the flavor.
+
+        :param flavor: The :class:`Flavor` (or its ID) to update.
+        :param description: The description to set on the flavor.
+        """
+        body = {
+            'flavor': {
+                'description': description
+            }
+        }
+        return self._update('/flavors/%s' % base.getid(flavor), body, 'flavor')

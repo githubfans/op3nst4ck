@@ -577,13 +577,10 @@ def nextName_port():
 def nextName_instance():
     list_ = nv.servers.list()
     if len(list_) > 0:
-        jdumps = json.dumps(list_, indent=4, sort_keys=True)
-        jloads = json.loads(jdumps)
         num = 0
-        for data in jloads['server']:
-            if re.search('instance', data['name']):
-                if re.search('.' + get_var('OS_USERNAME'), data['name']):
-                    num += 1
+        for data in list_:
+            if re.search('instance', str(data)):
+                num += 1
         if num > 0:
             num = num + 1
             next_name = 'instance' + str(num) + '.' + get_var('OS_USERNAME')
@@ -1820,17 +1817,17 @@ elif argv1 == 'servercreate':
 
     nv = get_nova()
 
-    # name = ''
+    # instance_name = ''
     # n = 0
-    # while name == '' or len(name) < 5 or len(servers) > 0:
-    #     name = input('Nama instance (min. 5 hurup) : ')
-    #     servers = nv.servers.list(search_opts={'name': name})
+    # while instance_name == '' or len(instance_name) < 5 or len(servers) > 0:
+    #     instance_name = input('Nama instance (min. 5 hurup) : ')
+    #     servers = nv.servers.list(search_opts={'name': instance_name})
     #     if len(servers) > 0:
-    #         print('Nama instance "' + name + '" sudah ada.')
+    #         print('Nama instance "' + instance_name + '" sudah ada.')
     #     n += 1
     #     if n >= 5:
     #         exit('Batal bikin instance.')
-    name = nextName_instance()
+    instance_name = nextName_instance()
     # imageList()
     # image = ''
     # n = 0
@@ -1865,20 +1862,30 @@ elif argv1 == 'servercreate':
     #     n += 1
     #     if n >= 5:
     #         exit('Batal bikin instance.')
-    # network = nv.networks.find(name='network2.aji')
-    network = '71cd19e8-0b9c-423c-ac6e-63028e12acce'
-
+    # network = nv.networks.find(name='network.aji2')
+    # network = nv.networks.find(id='a15e19b0-77a7-4d5c-9132-f06c9f4742f2')
+    network = 'a15e19b0-77a7-4d5c-9132-f06c9f4742f2'
     print(image)
     print(flavor)
     print(network)
     if image != '' and flavor != '' and network != '':
         try:
-            create_instance = nv.servers.create(name=name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}])
+            create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'default'}, createdby=get_var('OS_USERNAME'))
+            # , security_groups='default'
+            # novaclient.exceptions.BadRequest: Unable to find security_group with name or id 'a' (HTTP 400) (Request-ID: req-dc8384f6-b8ab-4cbc-acde-4122d573d2f4)
+
             # , security_groups='4bed540c-266d-4cc2-8225-3e02ccd89ff1'
+            # novaclient.exceptions.BadRequest: Unable to find security_group with name or id 'c' (HTTP 400) (Request-ID: req-caf4c1cb-32d6-45f7-9ab4-ba26cb2f7c2f)
+
             print(create_instance)
             print(type(create_instance))
+
         except IndexError:
-            print('create instance gagal !')
+            print('create instance "' + instance_name + '" gagal !')
+
+        finally:
+            print('Instance created : "' + instance_name + '"')
+
     else:
         print('Periksa inputan !')
 
@@ -1994,10 +2001,10 @@ elif argv1 == 'createnetcomplete':
                     "tenant_id": project,
                     "external_gateway_info": {
                         "enable_snat": "True",
-                        "external_fixed_ips": [{
-                            "ip_address": ip_add,
-                            "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
-                        }],
+                        # "external_fixed_ips": [{
+                        #     "ip_address": ip_add,
+                        #     "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
+                        # }],
                         "network_id": "d10dd06a-0425-49eb-a8ba-85abf55ac0f5"
                     }
                 }

@@ -52,16 +52,36 @@ class V1(base.Fixture):
 
     def test_quota(self, tenant_id='test'):
         return {
-            'tenant_id': tenant_id,
-            'metadata_items': [],
+            'id': tenant_id,
+            'metadata_items': 1,
             'injected_file_content_bytes': 1,
             'injected_file_path_bytes': 1,
             'ram': 1,
+            'fixed_ips': -1,
             'floating_ips': 1,
             'instances': 1,
             'injected_files': 1,
             'cores': 1,
-            'keypairs': 1,
+            'key_pairs': 1,
             'security_groups': 1,
-            'security_group_rules': 1
+            'security_group_rules': 1,
+            'server_groups': 1,
+            'server_group_members': 1
+        }
+
+
+class V2_57(V1):
+    """2.57 fixture data where there are no injected file or network resources
+    """
+
+    def test_quota(self, tenant_id='test'):
+        return {
+            'id': tenant_id,
+            'metadata_items': 1,
+            'ram': 1,
+            'instances': 1,
+            'cores': 1,
+            'key_pairs': 1,
+            'server_groups': 1,
+            'server_group_members': 1
         }
