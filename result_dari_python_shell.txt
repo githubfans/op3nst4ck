@@ -152,4 +152,31 @@ floatingip = {'floatingip':
     }
 }
 
+floatingip = {
+    'floatingips': {
+        'description': 'via python shell', 
+        'project_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'tenant_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5',
+        'port_details': {
+            'status': 'ACTIVE',
+            'name': 'port_details',
+            'admin_state_up': True,
+            'network_id': 'a15e19b0-77a7-4d5c-9132-f06c9f4742f2',
+            'device_owner': 'compute:nova',
+            'device_id': '16b27d36-2c04-4d14-b762-24655c9d6a97'
+        },
+        'fixed_ip_address': '192.168.51.2',
+        'port_id': '5d229609-8248-415a-98c3-75129e0840fa',
+    }
+}
+
+floatingip = {
+    'floatingips': {
+        'description': 'via python shell', 
+        'project_id': '56a2cb6964d94577af24a7aa0269f25e', 
+        'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5',
+    }
+}
+
 nt.create_floatingip(body=floatingip)
