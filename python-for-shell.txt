@@ -42,7 +42,7 @@ sess.get_token()
 ks = ks3client.Client(session=sess)
 nt = nt3client.Client(session=sess)
 nv = nv2client.client.Client(version='2.0', session=sess)
-gl =  glclient.Client(session=sess)
+gl = glclient.Client(session=sess)
 #--------------------------------------
 
 

@@ -11,6 +11,7 @@ import sys
 import re
 import subprocess
 import os
+import time
 # from colorama import Fore, Back, Style
 # from termcolor import colored, cprint
 
@@ -290,9 +291,13 @@ def roleList():
 
 def networkList(cari_name='', cari_id='', childs=False, header=True):
     if header is True:
+        if cari_id != '':
+            caption = 'Show '
+        else:
+            caption = 'List '
         print('\n')
         print(f.bold + fg.blue + '=====================' + f.reset)
-        print(f.bold + fg.blue + 'List Network' + f.reset)
+        print(f.bold + fg.blue + caption + 'Network' + f.reset)
         if cari_name != '':
             cari_name_ = fg.yellow + f.bold + '"' + cari_name + '"' + f.reset
             print('name = ' + cari_name_)
@@ -301,42 +306,39 @@ def networkList(cari_name='', cari_id='', childs=False, header=True):
         pass
     ks = get_keystone()
     nt = get_neutron()
-    netlist = nt.list_networks()
-    jdumps = json.dumps(netlist, indent=4, sort_keys=True)
-    jloads = json.loads(jdumps)
-    print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
-    for data in jloads['networks']:
-        if len(data['project_id']) == 32:
-            getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
-        else:
-            getproject = data['project_id'] + '(?)'
-        if cari_name != '':
-            if re.search(cari_name, data['name']):
-                print('\n')
-                print(data)
+    if cari_id != '':
+        netlist = nt.show_network(network=cari_id)
+        jdumps = json.dumps(netlist, indent=4, sort_keys=True)
+        jloads = json.loads(jdumps)
+        print(customprint(jloads))
+
+    else:
+        netlist = nt.list_networks()
+        jdumps = json.dumps(netlist, indent=4, sort_keys=True)
+        jloads = json.loads(jdumps)
+        print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
+        for data in jloads['networks']:
+            if len(data['project_id']) == 32:
+                getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
+            else:
+                getproject = data['project_id'] + '(?)'
+            if cari_name != '':
+                if re.search(cari_name, data['name']):
+                    print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+                    print('\n')
+                    print(data)
+                    print('\n\n')
+                    # if childs is True:
+                    #     subnetList(cari_name='', cari_network=data['id'], printout=True, header=False)
+                    #     portList(cari_name='', cari_network=data['id'], header=False)
+            else:
                 print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
-                # if childs is True:
-                #     subnetList(cari_name='', cari_network=data['id'], printout=True, header=False)
-                #     portList(cari_name='', cari_network=data['id'], header=False)
-        elif cari_id != '':
-            if re.search(cari_id, data['id']):
-                # print('\n')
-                # print(data)
-                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
-                # if childs is True:
-                #     print('Subnet List')
-                #     subnetList(cari_name='', cari_network=data['id'], printout=True, header=False)
-                #     print('Port List')
-                #     portList(cari_name='', cari_network=data['id'], header=False, parents=False)
-                #     print('\n')
-        else:
-            print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
-        if childs is True:
-            print(fg.blue + 'Subnet List' + f.reset)
-            subnetList(cari_name='', cari_network=data['id'], printout=True, header=False)
-            print(fg.blue + 'Port List' + f.reset)
-            portList(cari_name='', cari_network=data['id'], parents=False, header=False)
-            print('\n')
+            if childs is True:
+                print(fg.blue + 'Subnet List' + f.reset)
+                subnetList(cari_name='', cari_network=data['id'], printout=True, header=False)
+                print(fg.blue + 'Port List' + f.reset)
+                portList(cari_name='', cari_network=data['id'], parents=False, header=False)
+                print('\n\n')
 
 
 def subnetList(cari_name='', cari_network='', printout=True, header=True):
@@ -377,11 +379,11 @@ def subnetList(cari_name='', cari_network='', printout=True, header=True):
         # getnet = ''
         if cari_name != '':
             if re.search(cari_name, data['name']):
-                print('\n')
-                print(data)
                 output_count_num += 1
                 if printout is True:
                     print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getnet.ljust(17, ' '), data['gateway_ip'].ljust(17, ' '), data['description'].ljust(35, ' '))
+                    print('\n')
+                    print(data)
         elif cari_network != '':
             if re.search(cari_network, data['network_id']):
                 # print('\n')
@@ -448,63 +450,75 @@ def routerList(cari_name=''):
         if cari_name != '':
             # 'external_gateway_info': {'enable_snat': True, 'external_fixed_ips': [{'ip_address': '103.30.145.206'
             if re.search(cari_name, data['name']):
+                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), ext_ip.ljust(15, ' '), net_name.ljust(20, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '))
                 print('\n')
                 print(data)
-                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), ext_ip.ljust(15, ' '), net_name.ljust(20, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '))
+                print('\n\n')
         else:
             print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), ext_ip.ljust(15, ' '), net_name.ljust(20, ' '), getproject.ljust(15, ' '), data['status'].ljust(10, ' '))
 
 
-def portList(cari_name='', cari_network='', parents=True, header=True):
+def portList(cari_name='', cari_id='', cari_network='', parents=True, header=True):
     if header is True:
+        if cari_id != '':
+            caption = 'Show '
+        else:
+            caption = 'List '
         print('\n')
         print(f.bold + fg.blue + '=====================' + f.reset)
-        print(f.bold + fg.blue + 'List Port' + f.reset)
+        print(f.bold + fg.blue + caption + 'Port' + f.reset)
         if cari_name != '':
             cari_name_ = fg.yellow + f.bold + '"' + cari_name + '"' + f.reset
             print('name = ' + cari_name_)
         print(f.bold + fg.blue + '---------------------' + f.reset)
     ks = get_keystone()
     nt = get_neutron()
-    portlist = nt.list_ports()
-    jdumps = json.dumps(portlist, indent=4, sort_keys=True)
-    jloads = json.loads(jdumps)
-    # print(jloads)
-    print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'ROUTER'.ljust(15, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
-    for data in jloads['ports']:
-        # print(data)
-        if len(data['project_id']) == 32:
-            getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
-        else:
-            getproject = data['project_id'] + '(?)'
-        getroutername = ''
-        if data['device_id'] != '':
-            getrouterlist = nt.list_routers(id=data['device_id'])
-            try:
-                getroutername = getrouterlist['routers'][0]['name']
-            except IndexError:
-                pass
-        if cari_name != '':
-            if re.search(cari_name, data['name']):
-                print('\n')
-                print(data)
-                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(20, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
-        elif cari_network != '':
-            # if re.search(cari_network, data['network_id']):
-            if data['network_id'] == cari_network:
-                # print('\n')
-                # print(data)
-                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(20, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+    if cari_id != '':
+        portlist = nt.show_port(port=cari_id)
+        jdumps = json.dumps(portlist, indent=4, sort_keys=True)
+        jloads = json.loads(jdumps)
+        print(customprint(jloads))
+    elif cari_name != '':
+        portlist = nt.list_ports()
+        jdumps = json.dumps(portlist, indent=4, sort_keys=True)
+        jloads = json.loads(jdumps)
+        # print(jloads)
+        print('NAME'.ljust(25, ' '), 'ID'.ljust(40, ' '), 'PROJECT'.ljust(15, ' '), 'ROUTER'.ljust(25, ' '), 'STATUS.'.ljust(10, ' '), 'DESC.'.ljust(35, ' '))
+        for data in jloads['ports']:
+            # print(data)
+            if len(data['project_id']) == 32:
+                getproject = parsing(data=str(ks.projects.get(project=data['project_id'])), var='name')
+            else:
+                getproject = data['project_id'] + '(?)'
+            getroutername = ''
+            if data['device_id'] != '':
+                getrouterlist = nt.list_routers(id=data['device_id'])
+                try:
+                    getroutername = getrouterlist['routers'][0]['name']
+                except IndexError:
+                    pass
+            if cari_name != '':
+                if re.search(cari_name, data['name']):
+                    print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(25, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+                    print('\n')
+                    print(data)
+                    print('\n\n')
+            elif cari_network != '':
+                # if re.search(cari_network, data['network_id']):
+                if data['network_id'] == cari_network:
+                    # print('\n')
+                    # print(data)
+                    print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(25, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
+                    if parents is True:
+                        print('Network:')
+                        networkList(cari_name='', cari_id=data['network_id'], childs=False, header=False)
+                        print('\n')
+            else:
+                print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(25, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
                 if parents is True:
                     print('Network:')
                     networkList(cari_name='', cari_id=data['network_id'], childs=False, header=False)
                     print('\n')
-        else:
-            print(f.bold + fg.green + data['name'].ljust(25, ' ') + f.reset, data['id'].ljust(40, ' '), getproject.ljust(15, ' '), getroutername.ljust(20, ' '), data['status'].ljust(10, ' '), data['description'].ljust(35, ' '))
-            if parents is True:
-                print('Network:')
-                networkList(cari_name='', cari_id=data['network_id'], childs=False, header=False)
-                print('\n')
 
 
 def floatinIPList(cari_name=''):
@@ -604,88 +618,119 @@ def flavorList():
             print(data.strip().split('>')[0])
 
 
-def nextName_network():
-
+def nextName_network_v1():
+    nt = get_neutron()
     list_ = nt.list_networks()
     jdumps = json.dumps(list_, indent=4, sort_keys=True)
     jloads = json.loads(jdumps)
-    num = 0
-    for data in jloads['networks']:
-        if re.search('network', data['name']):
-            if re.search('.' + get_var('OS_USERNAME'), data['name']):
-                num += 1
+    coll = []
+    next_name = ''
+    for tryQue in range(1, 20):
+        for data in jloads['networks']:
+            if re.search('network', data['name']) and re.search('.' + get_var('OS_USERNAME'), data['name']):
+                data_name = data['name'].strip().split('network')[1]
+                data_queu = data_name.strip().split('.')[0]
+                coll.append(data_queu)
+        data_coll = ' ' . join(coll)
+        if re.search(str(tryQue), data_coll):
+            print('sudah ada >> network' + str(tryQue) + '.' + get_var('OS_USERNAME'))
+        else:
+            next_name = 'network' + str(tryQue) + '.' + get_var('OS_USERNAME')
+            break
+    return next_name
 
-    if num > 0:
-        num = num + 1
-        next_name = 'network' + str(num) + '.' + get_var('OS_USERNAME')
-    else:
-        next_name = 'network.' + get_var('OS_USERNAME')
 
+def nextName_network():
+    import time
+    next_name = 'network' + str(time.time()).strip().split('.')[0] + '.' + get_var('OS_USERNAME')
+    return next_name
+
+
+def nextName_subnet_v1():
+    nt = get_neutron()
+    list_ = nt.list_subnets()
+    jdumps = json.dumps(list_, indent=4, sort_keys=True)
+    jloads = json.loads(jdumps)
+    coll = []
+    for tryQue in range(1, 20):
+        for data in jloads['subnets']:
+            if re.search('subnet', data['name']) and re.search('.' + get_var('OS_USERNAME'), data['name']):
+                data_name = data['name'].strip().split('subnet')[1]
+                data_queu = data_name.strip().split('.')[0]
+                coll.append(data_queu)
+        data_coll = ' ' . join(coll)
+        if re.search(str(tryQue), data_coll):
+            print('sudah ada >> subnet' + str(tryQue) + '.' + get_var('OS_USERNAME'))
+        else:
+            next_name = 'subnet' + str(tryQue) + '.' + get_var('OS_USERNAME')
+            break
     return next_name
 
 
 def nextName_subnet():
+    import time
+    next_name = 'subnet' + str(time.time()).strip().split('.')[0] + '.' + get_var('OS_USERNAME')
+    return next_name
 
-    list_ = nt.list_subnets()
+
+def nextName_router_v1():
+    nt = get_neutron()
+    list_ = nt.list_routers()
     jdumps = json.dumps(list_, indent=4, sort_keys=True)
     jloads = json.loads(jdumps)
-    num = 0
-    for data in jloads['subnets']:
-        if re.search('subnet', data['name']):
-            if re.search('.' + get_var('OS_USERNAME'), data['name']):
-                num += 1
-
-    if num > 0:
-        num = num + 1
-        next_name = 'subnet' + str(num) + '.' + get_var('OS_USERNAME')
-    else:
-        next_name = 'subnet.' + get_var('OS_USERNAME')
-
+    data_coll = ''
+    coll = []
+    for data in jloads['routers']:
+        if re.search('router', data['name']) and re.search('.' + get_var('OS_USERNAME'), data['name']):
+            data_name = data['name'].strip().split('router')[1]
+            data_queu = data_name.strip().split('.')[0]
+            coll.append(data_queu)
+    data_coll = ' ' . join(coll)
+    print(data_coll)
+    for tryQue in range(1, 20):
+        if re.search(str(tryQue), data_coll):
+            print('sudah ada >> router' + str(tryQue) + '.' + get_var('OS_USERNAME'))
+        else:
+            next_name = 'router' + str(tryQue) + '.' + get_var('OS_USERNAME')
+            break
     return next_name
 
 
 def nextName_router():
-
-    list_ = nt.list_routers()
-    jdumps = json.dumps(list_, indent=4, sort_keys=True)
-    jloads = json.loads(jdumps)
-    num = 0
-    for data in jloads['routers']:
-        if re.search('router', data['name']):
-            if re.search('.' + get_var('OS_USERNAME'), data['name']):
-                num += 1
-
-    if num > 0:
-        num = num + 1
-        next_name = 'router' + str(num) + '.' + get_var('OS_USERNAME')
-    else:
-        next_name = 'router.' + get_var('OS_USERNAME')
-
+    import time
+    next_name = 'router' + str(time.time()).strip().split('.')[0] + '.' + get_var('OS_USERNAME')
     return next_name
 
 
-def nextName_port():
+def nextName_port_v1():
     nt = get_neutron()
     list_ = nt.list_ports()
     jdumps = json.dumps(list_, indent=4, sort_keys=True)
     jloads = json.loads(jdumps)
-    num = 0
+    data_coll = ''
+    coll = []
     for data in jloads['ports']:
-        if re.search('port', data['name']):
-            if re.search('.' + get_var('OS_USERNAME'), data['name']):
-                try:
-                    t = data['name'].strip().split('port')[1]
-                    data_name_number = int(t.strip().split('.' + get_var('OS_USERNAME'))[0])
-                    if data_name_number > 1:
-                        data_name_number = data_name_number + 1
-                except IndexError:
-                    data_name_number = 1
-    next_name = 'port' + str(data_name_number) + '.' + get_var('OS_USERNAME')
-
+        if re.search('port', data['name']) and re.search('.' + get_var('OS_USERNAME'), data['name']):
+            data_name = data['name'].strip().split('port')[1]
+            data_queu = data_name.strip().split('.')[0]
+            coll.append(data_queu)
+    data_coll = ' ' . join(coll)
+    for tryQue in range(1, 20):
+        if re.search(str(tryQue), data_coll):
+            print('sudah ada >> port' + str(tryQue) + '.' + get_var('OS_USERNAME'))
+        else:
+            next_name = 'port' + str(tryQue) + '.' + get_var('OS_USERNAME')
+            break
     return next_name
 
 
-def nextName_instance():
+def nextName_port():
+    import time
+    next_name = 'port' + str(time.time()).strip().split('.')[0] + '.' + get_var('OS_USERNAME')
+    return next_name
+
+
+def nextName_instance_v1():
     list_ = nv.servers.list()
     if len(list_) > 0:
         num = 0
@@ -699,6 +744,12 @@ def nextName_instance():
             next_name = 'instance.' + get_var('OS_USERNAME')
     else:
         next_name = 'instance.' + get_var('OS_USERNAME')
+    return next_name
+
+
+def nextName_instance():
+    import time
+    next_name = 'instance' + str(time.time()).strip().split('.')[0] + '.' + get_var('OS_USERNAME')
     return next_name
 
 
@@ -885,7 +936,9 @@ if argv1 == 'rc':
 
     '''
     ks = get_keystone()
+    print('==================')
     print('Mengganti file rc.')
+    print('==================')
     nf = open("rc.api3", "r")
     rc = nf.read()
     print('rc aktif = ' + rc.strip())
@@ -1481,7 +1534,7 @@ elif argv1 == 'netlist':
         cari_name = sys.argv[2]
     except IndexError:
         cari_name = input('Cari nama network (kosongkan = semua nama) : ')
-        networkList(cari_name=cari_name, childs=True, header=False)
+        networkList(cari_name=cari_name, childs=False, header=False)
 
 elif argv1 == 'netcreate':
     '''
@@ -1512,7 +1565,7 @@ elif argv1 == 'netcreate':
     project = parsing(data=str(p), var='id')
 
     if name != '' and project != '':
-        network = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}
+        network = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username, "project_id": project, "tenant_id": project}
         # print(network)
         result = nt.create_network({'network': network})
         j = json.dumps(result, indent=4)
@@ -1601,7 +1654,7 @@ elif argv1 == 'netcreate.v1':
             exit('Batal bikin network.')
 
     if name != '' and project != '':
-        network = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}
+        network = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username, "project_id": project, "tenant_id": project}
         # print(network)
         result = nt.create_network({'network': network})
         j = json.dumps(result, indent=4)
@@ -1743,7 +1796,7 @@ elif argv1 == 'routercreate':
     ks = get_keystone()
     nt = get_neutron()
 
-    router_name = nextName_router()
+    router_name = nextName_router_v1()
     print('\n\n' + fg.yellow + 'Bikin router "' + router_name + '"' + f.reset)
 
     project_name = get_var('OS_PROJECT_NAME')
@@ -1752,23 +1805,25 @@ elif argv1 == 'routercreate':
     if len(project_id) != 32:
         exit('Project tidak dikenal : ' + project_id)
     nt.format = 'json'
-    ip_add = ''
-    print('\n\n' + fg.lightgrey + 'Cari available ip...."' + router_name + '"' + f.reset)
-    while ip_add is False or ip_add == '':
-        ip_add = get_availableIpPublic(ipprefix='103.30.145.')
-    print('\n\n' + fg.lightgrey + 'available ip : "' + ip_add + '"' + f.reset)
+
+    # ip_add = ''
+    # print('\n\n' + fg.lightgrey + 'Cari available ip....' + f.reset)
+    # while ip_add is False or ip_add == '':
+    #     ip_add = get_availableIpPublic(ipprefix='103.30.145.')
+    # print('\n\n' + fg.lightgrey + 'available ip : "' + fg.green + ip_add + '"' + f.reset)
+
     request = {
         'router':
         {
             "name": router_name,
             "admin_state_up": True,
-            "description": "via createnetcomplete@" + __file__ + ". createdby:" + get_var('OS_USERNAME'),
+            "description": "via createnetcomplete@" + __file__ + ". createdby=" + get_var('OS_USERNAME'),
             "project_id": project_id,
             "tenant_id": project_id,
             "external_gateway_info": {
                 "enable_snat": "True",
                 "external_fixed_ips": [{
-                    "ip_address": ip_add,
+                    # "ip_address": ip_add,
                     "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
                 }],
                 "network_id": "d10dd06a-0425-49eb-a8ba-85abf55ac0f5"
@@ -1791,27 +1846,34 @@ elif argv1 == 'routercreate':
             if n >= 5:
                 exit('Batal bikin subnet.')
                 nt.delete_router(router_id)
-        port_name = nextName_port()
+        port_name = nextName_port_v1()
         print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
-        # subnet_search_network = subnet_id = nt.list_subnets(network_id=network_id)    
-        # subnet_id = subnet_search_network['subnets'][0]['id']
-        # gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
-        # gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
+
+        subnet_search_network = nt.list_subnets(network_id=network_id)
+        # print(subnet_search_network)
+        subnet_id = subnet_search_network['subnets'][0]['id']
+        # print(subnet_id)
+        gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
+        # print(gateway_parse3_1)
+        gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
+        # print(gateway_parse3)
+
         body_value = {
             'port': {
                 'admin_state_up': True,
                 'device_id': router_id,
                 'name': port_name,
                 'network_id': network_id,
-                'binding:host_id': 'rocky-controller.jcamp.net',
-                'binding:profile': {},
-                'binding:vnic_type': 'normal',
-                # 'fixed_ips': [{
-                #     'subnet_id': subnet_id,
-                #     'ip_address': '192.168.' + gateway_parse3 + '.1'
-                # }],
+                # 'binding:host_id': 'rocky-controller.jcamp.net',
+                # 'binding:profile': {},
+                # 'binding:vnic_type': 'normal',
+                'fixed_ips': [{
+                    'subnet_id': subnet_id,
+                    'ip_address': '192.168.' + gateway_parse3 + '.1'
+                }],
             }
         }
+        print(customprint(body_value))
 
         response = nt.create_port(body=body_value)
         # print(response)
@@ -1853,7 +1915,7 @@ elif argv1 == 'routercreate.v1':
             exit('Batal bikin router.')
 
     if name != '' and project != '':
-        router = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}
+        router = {"name": name, "admin_state_up": True, "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username, "project_id": project, "tenant_id": project}
         # print(router)
         result = nt.create_router({'router': router})
         j = json.dumps(result, indent=4)
@@ -1909,7 +1971,8 @@ elif argv1 == 'routerupdate':
         if yakin == 'tidak' or yakin == '':
             exit('Batal pasang IP.')
     if ip_add != '':
-        bodyu = {'router':
+        bodyu = {
+            'router':
             {
                 "external_gateway_info": {
                     "enable_snat": "True",
@@ -1930,6 +1993,7 @@ elif argv1 == 'port':
     '''
     * port list
     * -c = create
+    * id:xxxxxxx = cari id port
     '''
     try:
         arg2 = sys.argv[2]
@@ -1943,6 +2007,18 @@ elif argv1 == 'port':
         except IndexError:
             cari_name = input('Cari nama port (kosongkan = semua nama) : ')
         portList(cari_name)
+
+    elif re.search('id:', arg2):
+        print('\n-----------------\nCARI PORT by ID\n------------------\n')
+        try:
+            cari_id = sys.argv[2]
+            if len(cari_id) > 3:
+                cari_id = cari_id.strip().split("id:")[1]
+            else:
+                cari_id = input('Cari id port : ')
+        except IndexError:
+            cari_id = input('Cari id port : ')
+        portList(cari_id=cari_id)
 
     elif arg2 == '-c':
 
@@ -1997,10 +2073,10 @@ elif argv1 == 'port':
                     'binding:host_id': 'rocky-controller.jcamp.net',
                     'binding:profile': {},
                     'binding:vnic_type': 'normal',
-                    'fixed_ips': [{
-                        'subnet_id': subnet,
-                        'ip_address': '192.168.' + gateway_parse3 + '.1'
-                    }],
+                    # 'fixed_ips': [{
+                    #     'subnet_id': subnet,
+                    #     'ip_address': '192.168.' + gateway_parse3 + '.1'
+                    # }],
                 }
             }
             result = nt.create_port(body=body_value)
@@ -2011,6 +2087,13 @@ elif argv1 == 'port':
                 portList(cari_name=name)
             else:
                 print(f.red + 'port baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
+
+    else:
+        print(arg2)
+        print('\n \
+        * -c = create \
+        * id:xxxxxxx = cari id port \
+        \n')
 
 elif argv1 == 'server':
     '''
@@ -2055,14 +2138,28 @@ elif argv1 == 'server':
             n += 1
             if n >= 5:
                 exit('Batal bikin instance.')
+        # if image != '' and flavor != '' and network != '':
+        #     try:
+        #         create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'default'}, createdby=get_var('OS_USERNAME'))
+        #         print(create_instance)
+        #     except IndexError:
+        #         print('create instance "' + instance_name + '" gagal !')
+        #     finally:
+        #         print('Instance created : "' + instance_name + '"')
+        # else:
+        #     print('Periksa inputan !')
+
+        # instance_name = nextName_instance()
+        # print('\n\n' + fg.yellow + 'Bikin instance "' + instance_name + '"' + f.reset)
+        # image = '82189ef1-2c20-475c-9d40-325eb567df56'
+        # flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
+        # network = network_id
         if image != '' and flavor != '' and network != '':
             try:
-                create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'default'}, createdby=get_var('OS_USERNAME'))
+                create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'4bed540c-266d-4cc2-8225-3e02ccd89ff1'}, createdby=get_var('OS_USERNAME'))
                 print(create_instance)
             except IndexError:
-                print('create instance "' + instance_name + '" gagal !')
-            finally:
-                print('Instance created : "' + instance_name + '"')
+                print('create instance gagal !')
         else:
             print('Periksa inputan !')
 
@@ -2094,13 +2191,14 @@ elif argv1 == 'createnetcomplete':
         try:
             print('\n\n' + fg.yellow + 'Bikin network "' + network_name + '"' + f.reset)
             nt.format = 'json'
-            body_sample = {'network': {'name': network_name, 'admin_state_up': True, "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username, "project_id": project, "tenant_id": project}}
+            body_sample = {'network': {'name': network_name, 'admin_state_up': True, "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username, "project_id": project, "tenant_id": project}}
 
             result_create_network = nt.create_network(body=body_sample)
             net_dict = result_create_network['network']
             network_id = net_dict['id']
-            networkList(cari_name=network_name)
+            networkList(cari_id=network_id)
 
+            time.sleep(5)
             subnet_name = nextName_subnet()
             print('\n\n' + fg.yellow + 'Bikin subnet "' + subnet_name + '"' + f.reset)
 
@@ -2108,12 +2206,12 @@ elif argv1 == 'createnetcomplete':
             body_create_subnet = {'subnets': [
                 {
                     "name": subnet_name,
-                    "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username,
+                    "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username,
                     "enable_dhcp": "True",
                     "dns_nameservers": ["8.8.8.8"],
                     "allocation_pools": [{
                         "start": "192.168." + gateway_parse3 + ".2",
-                        "end": "192.168." + gateway_parse3 + ".5",
+                        "end": "192.168." + gateway_parse3 + ".200",
                     }],
                     "gateway_ip": "192.168." + gateway_parse3 + ".254",
                     "cidr": "192.168." + gateway_parse3 + ".0/24",
@@ -2145,26 +2243,29 @@ elif argv1 == 'createnetcomplete':
 
         try:
 
+            time.sleep(5)
             router_name = nextName_router()
             print('\n\n' + fg.yellow + 'Bikin router "' + router_name + '"' + f.reset)
             nt.format = 'json'
-            ip_add = ''
-            print('\n\n' + fg.lightgrey + 'Cari available ip...."' + router_name + '"' + f.reset)
-            while ip_add is False or ip_add == '':
-                ip_add = get_availableIpPublic(ipprefix='103.30.145.')
-            print('\n\n' + fg.lightgrey + 'available ip : "' + ip_add + '"' + f.reset)
+
+            # ip_add = ''
+            # print('\n\n' + fg.lightgrey + 'Cari available ip...."' + router_name + '"' + f.reset)
+            # while ip_add is False or ip_add == '':
+            #     ip_add = get_availableIpPublic(ipprefix='103.30.145.')
+            # print('\n\n' + fg.lightgrey + 'available ip : "' + ip_add + '"' + f.reset)
+
             request = {
                 'router':
                 {
                     "name": router_name,
                     "admin_state_up": True,
-                    "description": "via createnetcomplete@" + __file__ + ". createdby:" + UserRC_username,
+                    "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username,
                     "project_id": project,
                     "tenant_id": project,
                     "external_gateway_info": {
                         "enable_snat": "True",
                         "external_fixed_ips": [{
-                            "ip_address": ip_add,
+                            # "ip_address": ip_add,
                             "subnet_id": "4639e018-1cc1-49cc-89d4-4cad49bd4b89"
                         }],
                         "network_id": "d10dd06a-0425-49eb-a8ba-85abf55ac0f5"
@@ -2177,31 +2278,33 @@ elif argv1 == 'createnetcomplete':
             # print(router)
             routerList(cari_name=router_name)
 
+            time.sleep(5)
             port_name = nextName_port()
             print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
             body_value = {
                 'port': {
                     'admin_state_up': True,
+                    'device_owner': 'network:router_interface',
                     'device_id': router_id,
                     'name': port_name,
                     'network_id': network_id,
+                    'security_groups': {'4bed540c-266d-4cc2-8225-3e02ccd89ff1'},
                     'binding:host_id': 'rocky-controller.jcamp.net',
                     'binding:profile': {},
                     'binding:vnic_type': 'normal',
-                    # 'fixed_ips': [{
-                    #     'subnet_id': subnet_id,
-                    #     'ip_address': '192.168.' + gateway_parse3 + '.1'
-                    # }],
+                    'fixed_ips': [{
+                        'subnet_id': subnet_id,
+                        'ip_address': '192.168.' + gateway_parse3 + '.1'
+                    }],
                 }
             }
 
             response = nt.create_port(body=body_value)
-            portList(cari_name=port_name)
+            # portList(cari_name=port_name)
         finally:
             print("Execution completed : + router + port")
-    import time
-    for numin in range(0, 3):
-        time.sleep(3)
+    for numin in range(0, 2):
+        time.sleep(5)
         instance_name = nextName_instance()
         print('\n\n' + fg.yellow + 'Bikin instance "' + instance_name + '"' + f.reset)
         image = '82189ef1-2c20-475c-9d40-325eb567df56'
@@ -2268,4 +2371,9 @@ elif argv1 == 'test':
     # subnetList(cari_name='aji', printout=False)
     # get_availableGatewayIp()
     # get_availableIpPublic('103.30.145.')
-    print(nextName_port())
+    # print(nextName_port())
+    # print(nextName_network())
+    # print(nextName_port())
+    # networkList(cari_name='', cari_id='1f7d1582-afd6-41a0-bc60-e366c81ff4d8', childs=True, header=True)
+    # networkList(cari_id='d68ce00e-943b-45fe-ae0c-487b667d398c')
+    print(nextName_port_v1())
