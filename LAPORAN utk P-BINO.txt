@@ -1,0 +1,108 @@
+# LAPORAN u/ P-BINO
+
+* Create and manage networks *
+** via OpenStack CLI @ Ubuntu **
+
+
+# bikin network -- ini yg menjadi perantara antara subnet dan router
+
+(venv_os) [centos@aji-instance1b ~]$ openstack network create net1-via-oscli.aji
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | UP                                   |
+| availability_zone_hints   |                                      |
+| availability_zones        |                                      |
+| created_at                | 2018-12-07T02:17:45Z                 |
+| description               |                                      |
+| dns_domain                | None                                 |
+| id                        | 091dc580-c63f-41f3-8f4b-ab5218c83029 |
+| ipv4_address_scope        | None                                 |
+| ipv6_address_scope        | None                                 |
+| is_default                | False                                |
+| is_vlan_transparent       | None                                 |
+| mtu                       | 1500                                 |
+| name                      | net1-via-oscli.aji                   |
+| port_security_enabled     | True                                 |
+| project_id                | c0b89f614b5a457cb5acef8fe8c2b320     |
+| provider:network_type     | vlan                                 |
+| provider:physical_network | viavlan                              |
+| provider:segmentation_id  | 2047                                 |
+| qos_policy_id             | None                                 |
+| revision_number           | 1                                    |
+| router:external           | Internal                             |
+| segments                  | None                                 |
+| shared                    | False                                |
+| status                    | ACTIVE                               |
+| subnets                   |                                      |
+| tags                      |                                      |
+| updated_at                | 2018-12-07T02:17:45Z                 |
++---------------------------+--------------------------------------+
+
+
+# bikin subnet -- ini untuk membagi IP ke tiap2 host/pc 
+
+(venv_os) [centos@aji-instance1b ~]$ openstack subnet create subnet1-net1-via-oscli.aji --network 091dc580-c63f-41f3-8f4b-ab5218c83029 --subnet-range 192.168.105.0/24
++-------------------+--------------------------------------+
+| Field             | Value                                |
++-------------------+--------------------------------------+
+| allocation_pools  | 192.168.105.2-192.168.105.254        |
+| cidr              | 192.168.105.0/24                     |
+| created_at        | 2018-12-07T02:35:51Z                 |
+| description       |                                      |
+| dns_nameservers   |                                      |
+| enable_dhcp       | True                                 |
+| gateway_ip        | 192.168.105.1                        |
+| host_routes       |                                      |
+| id                | d422b82d-008b-40e9-a5cc-c5fb9996c0d5 |
+| ip_version        | 4                                    |
+| ipv6_address_mode | None                                 |
+| ipv6_ra_mode      | None                                 |
+| name              | subnet1-net1-via-oscli.aji           |
+| network_id        | 091dc580-c63f-41f3-8f4b-ab5218c83029 |
+| project_id        | c0b89f614b5a457cb5acef8fe8c2b320     |
+| revision_number   | 0                                    |
+| segment_id        | None                                 |
+| service_types     |                                      |
+| subnetpool_id     | None                                 |
+| tags              |                                      |
+| updated_at        | 2018-12-07T02:35:51Z                 |
++-------------------+--------------------------------------+
+
+
+# bikin router -- ini yg akan mengubungkan ext-network dengan network
+
+(venv_os) [centos@aji-instance1b ~]$ openstack router create router1-net1-via-oscli.aji
++-------------------------+--------------------------------------+
+| Field                   | Value                                |
++-------------------------+--------------------------------------+
+| admin_state_up          | UP                                   |
+| availability_zone_hints |                                      |
+| availability_zones      |                                      |
+| created_at              | 2018-12-07T02:38:52Z                 |
+| description             |                                      |
+| distributed             | False                                |
+| external_gateway_info   | None                                 |
+| flavor_id               | None                                 |
+| ha                      | False                                |
+| id                      | aaaa42ba-0c44-4ea4-93d7-900b76402115 |
+| name                    | router1-net1-via-oscli.aji           |
+| project_id              | c0b89f614b5a457cb5acef8fe8c2b320     |
+| revision_number         | 0                                    |
+| routes                  |                                      |
+| status                  | ACTIVE                               |
+| tags                    |                                      |
+| updated_at              | 2018-12-07T02:38:52Z                 |
++-------------------------+--------------------------------------+
+
+
+# memasang ext. gateway -- agar router terhubung dgn ext-network
+
+(venv_os) [centos@aji-instance1b ~]$ openstack router set aaaa42ba-0c44-4ea4-93d7-900b76402115 --external-gateway d10dd06a-0425-49eb-a8ba-85abf55ac0f5
+
+
+# menghubungkan router dengan subnet
+(venv_os) [centos@aji-instance1b ~]$ openstack router add subnet aaaa42ba-0c44-4ea4-93d7-900b76402115 d422b82d-008b-40e9-a5cc-c5fb9996c0d5
+
+*** sampai tahap ini :
+    1. ext-network <--> router <--> subnet

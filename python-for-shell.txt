@@ -27,7 +27,7 @@ OS_IMAGE_API_VERSION='2'
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
 from keystoneclient.v3 import client as ks3client
-from neutronclient.v2_0 import client as nt3client
+from neutronclient.v2_0 import client as nt2client
 from novaclient.v2 import client as nv2client
 import glanceclient.v2.client as glclient
 
@@ -40,7 +40,7 @@ auth = v3.Password(auth_url=OS_AUTH_URL,
 sess = session.Session(auth=auth)
 sess.get_token()
 ks = ks3client.Client(session=sess)
-nt = nt3client.Client(session=sess)
+nt = nt2client.Client(session=sess)
 nv = nv2client.client.Client(version='2.0', session=sess)
 gl = glclient.Client(session=sess)
 #--------------------------------------
