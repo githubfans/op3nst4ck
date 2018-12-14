@@ -30,6 +30,7 @@ from keystoneclient.v3 import client as ks3client
 from neutronclient.v2_0 import client as nt2client
 from novaclient.v2 import client as nv2client
 import glanceclient.v2.client as glclient
+import json
 
 auth = v3.Password(auth_url=OS_AUTH_URL, 
                    username=OS_USERNAME, 
@@ -44,11 +45,12 @@ nt = nt2client.Client(session=sess)
 nv = nv2client.client.Client(version='2.0', session=sess)
 gl = glclient.Client(session=sess)
 #--------------------------------------
+from functions import *
 
 
 
 
-
+    
 import os
 import subprocess
 os.system('curl -i -X PATCH -H "X-Auth-Token: gAAAAABb_LATazX3_vX8zJI_OXMIYNd5oz3DX4JDoiXpKthfv1H1_2YUxOOsbqleFCWR8_K-5CBreYiClGJcA-U775wUFE2ku-LE1k04ufaAae3mAF1bha4cDIuUV3OH9WXGH8_C9nLttNrexcHDCAM4vIE63p4JbHRKWI6zPlVX9dpP61YYlnY" -H "Content-Type: application/json" http://rocky-controller.jcamp.net:8774/v2/images/')

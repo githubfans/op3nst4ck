@@ -104,5 +104,551 @@
 # menghubungkan router dengan subnet
 (venv_os) [centos@aji-instance1b ~]$ openstack router add subnet aaaa42ba-0c44-4ea4-93d7-900b76402115 d422b82d-008b-40e9-a5cc-c5fb9996c0d5
 
-*** sampai tahap ini :
+*** sampai tahap ini, dengan melihat net-topology di horizon :
     1. ext-network <--> router <--> subnet
+
+
+KASUS di network9.aji (dari penampakan network topologi di horizon)
+1. sampai tahap create router, router blm terhubung ke subnet
+2. di network9.aji, tabel port, tidak ada port router_interface
+
+
+coba bikin portnya pake openstack-cli
+
+(venv_os) [centos@aji-instance1b ~]$ openstack port create --network 06de756f-a91a-4720-9460-1890d923640e --fixed-ip subnet=6ff75f44-80b0-4f7e-a450-ece959223a18,ip-address=192.168.107.1 port1-network9-via-oscli.aji
++-----------------------+------------------------------------------------------------------------------+
+| Field                 | Value                                                                        |
++-----------------------+------------------------------------------------------------------------------+
+| admin_state_up        | UP                                                                           |
+| allowed_address_pairs |                                                                              |
+| binding_host_id       |                                                                              |
+| binding_profile       |                                                                              |
+| binding_vif_details   |                                                                              |
+| binding_vif_type      | unbound                                                                      |
+| binding_vnic_type     | normal                                                                       |
+| created_at            | 2018-12-07T04:46:29Z                                                         |
+| data_plane_status     | None                                                                         |
+| description           |                                                                              |
+| device_id             |                                                                              |
+| device_owner          |                                                                              |
+| dns_assignment        | None                                                                         |
+| dns_domain            | None                                                                         |
+| dns_name              | None                                                                         |
+| extra_dhcp_opts       |                                                                              |
+| fixed_ips             | ip_address='192.168.107.1', subnet_id='6ff75f44-80b0-4f7e-a450-ece959223a18' |
+| id                    | e0c5872f-2c22-41cc-b9e4-9ecf013e5122                                         |
+| mac_address           | fa:16:3e:9e:25:ca                                                            |
+| name                  | port1-network9-via-oscli.aji                                                 |
+| network_id            | 06de756f-a91a-4720-9460-1890d923640e                                         |
+| port_security_enabled | True                                                                         |
+| project_id            | c0b89f614b5a457cb5acef8fe8c2b320                                             |
+| qos_policy_id         | None                                                                         |
+| revision_number       | 1                                                                            |
+| security_group_ids    | 4bed540c-266d-4cc2-8225-3e02ccd89ff1                                         |
+| status                | DOWN                                                                         |
+| tags                  |                                                                              |
+| trunk_details         | None                                                                         |
+| updated_at            | 2018-12-07T04:46:29Z                                                         |
++-----------------------+------------------------------------------------------------------------------+
+
+dari hasil eksekusi di atas, port sudah tersedia, tapi router blm terhubung dengan subnet
+
+
+coba set router di port
+
+(venv_os) [centos@aji-instance1b ~]$ openstack port set e0c5872f-2c22-41cc-b9e4-9ecf013e5122 --device 3cc29aae-2ad7-44b6-b826-febd93080e53
+
+dari hasil eksekusi di atas, router sudah "kelihatan" terhubung dengan subnet
+namun port Statusnya : DOWN
+
+coba lihat data portnya
+
+nt.show_port(port = 'e0c5872f-2c22-41cc-b9e4-9ecf013e5122') 
+{
+    'port': {
+        'allowed_address_pairs': [],
+        'extra_dhcp_opts': [],
+        'updated_at': '2018-12-07T06:26:02Z',
+        'device_owner': '',
+        'revision_number': 3,
+        'port_security_enabled': True,
+        'binding:profile': {},
+        'fixed_ips': [{
+            'subnet_id': 'd6ff75f44-80b0-4f7e-a450-ece959223a18',
+            'ip_address': '192.168.107.1'
+        }],
+        'id': 'e0c5872f-2c22-41cc-b9e4-9ecf013e5122',
+        'security_groups': ['4bed540c-266d-4cc2-8225-3e02ccd89ff1'],
+        'binding:vif_details': {},
+        'binding:vif_type': 'unbound',
+        'mac_address': 'fa:16:3e:9e:25:ca',
+        'project_id': 'c0b89f614b5a457cb5acef8fe8c2b320',
+        'status': 'DOWN',
+        'binding:host_id': '',
+        'description': '',
+        'tags': [],
+        'device_id': '3cc29aae-2ad7-44b6-b826-febd93080e53',
+        'name': 'port1-network9-via-oscli.aji',
+        'admin_state_up': True,
+        'network_id': '06de756f-a91a-4720-9460-1890d923640e',
+        'tenant_id': 'c0b89f614b5a457cb5acef8fe8c2b320',
+        'created_at': '2018-12-07T04:46:29Z',
+        'binding:vnic_type': 'normal'
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================
+2018-12-11
+
+
+
+# bikin instance pake horizon
+
+opsi "create new volume" pilih "no" : HV yang jalan masih belum di setting buat cindernya
+
+instance :
+http://rocky-controller.jcamp.net/project/instances/3c9fdc63-f469-4cfa-8818-c94904bf22c5/
+
+
+# bikin instance pake os-cli
+
+tanpa opsi volume spt cara di horizon
+
+(venv_os) [centos@aji-instance1b ~]$ openstack server create --flavor jc010120 --image CentOS-7-x86_64-GenericCloud --network 0f697e52-1322-495f-bb86-b950ec32adb4 network6.aji-instance1.oscli
++-------------------------------------+---------------------------------------------------------------------+
+| Field                               | Value                                                               |
++-------------------------------------+---------------------------------------------------------------------+
+| OS-DCF:diskConfig                   | MANUAL                                                              |
+| OS-EXT-AZ:availability_zone         |                                                                     |
+| OS-EXT-SRV-ATTR:host                | None                                                                |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | None                                                                |
+| OS-EXT-SRV-ATTR:instance_name       |                                                                     |
+| OS-EXT-STS:power_state              | NOSTATE                                                             |
+| OS-EXT-STS:task_state               | scheduling                                                          |
+| OS-EXT-STS:vm_state                 | building                                                            |
+| OS-SRV-USG:launched_at              | None                                                                |
+| OS-SRV-USG:terminated_at            | None                                                                |
+| accessIPv4                          |                                                                     |
+| accessIPv6                          |                                                                     |
+| addresses                           |                                                                     |
+| adminPass                           | 7jYKh2ALiCnD                                                        |
+| config_drive                        |                                                                     |
+| created                             | 2018-12-11T07:08:08Z                                                |
+| flavor                              | jc010120 (df0c0ef6-5ddd-4b65-bf0a-a135287df742)                     |
+| hostId                              |                                                                     |
+| id                                  | 5746eddc-db38-4ad4-9663-0530981698a7                                |
+| image                               | CentOS-7-x86_64-GenericCloud (82189ef1-2c20-475c-9d40-325eb567df56) |
+| key_name                            | None                                                                |
+| name                                | network6.aji-instance1.oscli                                        |
+| progress                            | 0                                                                   |
+| project_id                          | c0b89f614b5a457cb5acef8fe8c2b320                                    |
+| properties                          |                                                                     |
+| security_groups                     | name='default'                                                      |
+| status                              | BUILD                                                               |
+| updated                             | 2018-12-11T07:08:08Z                                                |
+| user_id                             | 2661ef095ffc4899a62cd8afd8b422fc                                    |
+| volumes_attached                    |                                                                     |
++-------------------------------------+---------------------------------------------------------------------+
+
+# bikin instance di python
+
+>>> instance_name = 'network6.aji-instance5.aji'
+>>> image = '82189ef1-2c20-475c-9d40-325eb567df56'
+>>> flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
+>>> network = '0f697e52-1322-495f-bb86-b950ec32adb4'
+>>> create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'4bed540c-266d-4cc2-8225-3e02ccd89ff1'}, createdby=get_var('OS_USERNAME'))
+>>> print(json.dumps(create_instance.to_dict(), sort_keys=True, indent=4))
+{
+    "OS-DCF:diskConfig": "MANUAL",
+    "adminPass": "VrDmds44qWVT",
+    "id": "a6d4f925-f643-4340-960c-ca6916d941de",
+    "links": [
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/v2.1/servers/a6d4f925-f643-4340-960c-ca6916d941de",
+            "rel": "self"
+        },
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/servers/a6d4f925-f643-4340-960c-ca6916d941de",
+            "rel": "bookmark"
+        }
+    ],
+    "security_groups": [
+        {
+            "name": "4bed540c-266d-4cc2-8225-3e02ccd89ff1"
+        }
+    ]
+}
+>>> print(create_instance.request_ids)
+['req-3ed5da73-b362-4584-8cbf-6d9789997fd6']
+>>> nv_slist = nv.servers.list()
+>>> for serv in nv_slist:
+...     s = serv.to_dict()
+...     try:
+...         if s['name'] == instance_name:
+...             print(json.dumps(s, sort_keys=True, indent=4))
+...     except IndexError:
+...         pass
+... 
+{
+    "OS-DCF:diskConfig": "MANUAL",
+    "OS-EXT-AZ:availability_zone": "nova",
+    "OS-EXT-SRV-ATTR:host": "nova-kvm.jcamp.net",
+    "OS-EXT-SRV-ATTR:hypervisor_hostname": "nova-kvm.jcamp.net",
+    "OS-EXT-SRV-ATTR:instance_name": "instance-000000c5",
+    "OS-EXT-STS:power_state": 1,
+    "OS-EXT-STS:task_state": null,
+    "OS-EXT-STS:vm_state": "active",
+    "OS-SRV-USG:launched_at": "2018-12-11T09:20:37.000000",
+    "OS-SRV-USG:terminated_at": null,
+    "accessIPv4": "",
+    "accessIPv6": "",
+    "addresses": {
+        "network6.aji": [
+            {
+                "OS-EXT-IPS-MAC:mac_addr": "fa:16:3e:3a:32:d5",
+                "OS-EXT-IPS:type": "fixed",
+                "addr": "192.168.101.12",
+                "version": 4
+            }
+        ]
+    },
+    "config_drive": "",
+    "created": "2018-12-11T09:20:29Z",
+    "flavor": {
+        "id": "df0c0ef6-5ddd-4b65-bf0a-a135287df742",
+        "links": [
+            {
+                "href": "http://rocky-controller.jcamp.net:8774/flavors/df0c0ef6-5ddd-4b65-bf0a-a135287df742",
+                "rel": "bookmark"
+            }
+        ]
+    },
+    "hostId": "297f185144fa89176350d133e832d4e88db59b8d14bed0a9ce835b90",
+    "id": "a6d4f925-f643-4340-960c-ca6916d941de",
+    "image": {
+        "id": "82189ef1-2c20-475c-9d40-325eb567df56",
+        "links": [
+            {
+                "href": "http://rocky-controller.jcamp.net:8774/images/82189ef1-2c20-475c-9d40-325eb567df56",
+                "rel": "bookmark"
+            }
+        ]
+    },
+    "key_name": null,
+    "links": [
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/v2.1/servers/a6d4f925-f643-4340-960c-ca6916d941de",
+            "rel": "self"
+        },
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/servers/a6d4f925-f643-4340-960c-ca6916d941de",
+            "rel": "bookmark"
+        }
+    ],
+    "metadata": {},
+    "name": "network6.aji-instance5.aji",
+    "os-extended-volumes:volumes_attached": [],
+    "progress": 0,
+    "security_groups": [
+        {
+            "name": "default"
+        }
+    ],
+    "status": "ACTIVE",
+    "tenant_id": "c0b89f614b5a457cb5acef8fe8c2b320",
+    "updated": "2018-12-11T09:20:37Z",
+    "user_id": "2661ef095ffc4899a62cd8afd8b422fc"
+}
+
+
+
+--------------------
+bikin instance 
+kemudian
+cek log nova
+--------------------
+
+(envOS)  ★  ~/Documents/openstack2   master±  os server -c
+
+-----------------
+CREATE INSTANCE
+------------------
+
+
+
+=====================
+List Network
+---------------------
+NAME                      ID                                       PROJECT         STATUS.    DESC.                              
+ajinet2                   057b2758-09a5-4af7-9ce3-4dffd9273ab6     aji             ACTIVE                                        
+net1-via-oscli.aji        091dc580-c63f-41f3-8f4b-ab5218c83029     aji             ACTIVE                                        
+network6.aji              0f697e52-1322-495f-bb86-b950ec32adb4     aji             ACTIVE     via createnetcomplete@openstackclient.1.py. createdby=aji
+amsyong.net               145e0376-5e5e-4b4e-963f-c55731df186b     aji             ACTIVE                                        
+Bino-net-01               942675f6-fd5e-4bb2-ba43-487be992ff4e     aji             ACTIVE                                        
+ajinet                    a3a60875-f2b6-4e7c-9959-2d5529da869b     aji             ACTIVE                                        
+Bino-net-02               dfc8ed54-106d-48d0-8b45-cbd3cf0fbb79     aji             ACTIVE                                        
+ajitest1                  f26ddb26-d8e4-489a-947a-e4a7b8b5f63f     aji             ACTIVE                                        
+Pilih id network : 0f697e52-1322-495f-bb86-b950ec32adb4
+['req-836c12f4-70c8-4977-a23a-153fb2ca85fe']
+{'security_groups': [{'name': '4bed540c-266d-4cc2-8225-3e02ccd89ff1'}], 'OS-DCF:diskConfig': 'MANUAL', 'id': '976898d1-8766-4131-9285-a6d0316af89c', 'links': [{'href': 'http://rocky-controller.jcamp.net:8774/v2.1/servers/976898d1-8766-4131-9285-a6d0316af89c', 'rel': 'self'}, {'href': 'http://rocky-controller.jcamp.net:8774/servers/976898d1-8766-4131-9285-a6d0316af89c', 'rel': 'bookmark'}], 'adminPass': 'bE6WitDJ9tjL'}
+{'OS-EXT-STS:task_state': 'scheduling', 'addresses': {}, 'links': [{'href': 'http://rocky-controller.jcamp.net:8774/v2.1/servers/976898d1-8766-4131-9285-a6d0316af89c', 'rel': 'self'}, {'href': 'http://rocky-controller.jcamp.net:8774/servers/976898d1-8766-4131-9285-a6d0316af89c', 'rel': 'bookmark'}], 'image': {'id': '82189ef1-2c20-475c-9d40-325eb567df56', 'links': [{'href': 'http://rocky-controller.jcamp.net:8774/images/82189ef1-2c20-475c-9d40-325eb567df56', 'rel': 'bookmark'}]}, 'OS-EXT-STS:vm_state': 'building', 'OS-EXT-SRV-ATTR:instance_name': '', 'OS-SRV-USG:launched_at': None, 'flavor': {'id': 'df0c0ef6-5ddd-4b65-bf0a-a135287df742', 'links': [{'href': 'http://rocky-controller.jcamp.net:8774/flavors/df0c0ef6-5ddd-4b65-bf0a-a135287df742', 'rel': 'bookmark'}]}, 'id': '976898d1-8766-4131-9285-a6d0316af89c', 'user_id': '2661ef095ffc4899a62cd8afd8b422fc', 'OS-DCF:diskConfig': 'MANUAL', 'accessIPv4': '', 'accessIPv6': '', 'progress': 0, 'OS-EXT-STS:power_state': 0, 'OS-EXT-AZ:availability_zone': '', 'config_drive': '', 'status': 'BUILD', 'updated': '2018-12-11T08:39:28Z', 'hostId': '', 'OS-EXT-SRV-ATTR:host': None, 'OS-SRV-USG:terminated_at': None, 'key_name': None, 'OS-EXT-SRV-ATTR:hypervisor_hostname': None, 'name': 'network6.aji-instance3.aji', 'created': '2018-12-11T08:39:28Z', 'tenant_id': 'c0b89f614b5a457cb5acef8fe8c2b320', 'os-extended-volumes:volumes_attached': [], 'metadata': {}}
+
+
+[root@rocky-controller ~]# tail -f /var/log/nova/nova-api.log 
+
+2018-12-11 15:39:28.312 6885 INFO nova.osapi_compute.wsgi.server [req-836c12f4-70c8-4977-a23a-153fb2ca85fe 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 203.161.185.210 "POST /v2.1/servers HTTP/1.1" status: 202 len: 938 time: 1.9398780
+2018-12-11 15:39:28.432 6889 INFO nova.osapi_compute.wsgi.server [req-5e2383c4-d313-4f15-ae0c-a364d8e484e3 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0053501
+2018-12-11 15:39:28.441 6889 INFO nova.osapi_compute.wsgi.server [req-009167fc-9b2e-4a29-b2a9-81491cad7620 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0049291
+2018-12-11 15:39:28.616 6885 INFO nova.osapi_compute.wsgi.server [req-e46f72db-a92f-443b-8aa1-d89ff68891f9 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 203.161.185.210 "GET /v2.1/servers/detail HTTP/1.1" status: 200 len: 12455 time: 0.2933519
+2018-12-11 15:39:29.896 6888 INFO nova.osapi_compute.wsgi.server [req-bd788b4c-aee5-41fc-af49-98695e679c86 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 15959 time: 1.1967580
+2018-12-11 15:39:32.899 6884 INFO nova.api.openstack.compute.server_external_events [req-b9f80177-07e4-4ad3-9afa-11a0e3dea560 40f0d6ff67f643d3b4640d7fe7d0a709 49eb39871fb148a29fc2df713eeab655 - default default] Creating event network-changed:57e49f39-385d-462b-b9ca-2433979a8749 for instance 976898d1-8766-4131-9285-a6d0316af89c on nova-kvm.jcamp.net
+2018-12-11 15:39:32.904 6884 INFO nova.osapi_compute.wsgi.server [req-b9f80177-07e4-4ad3-9afa-11a0e3dea560 40f0d6ff67f643d3b4640d7fe7d0a709 49eb39871fb148a29fc2df713eeab655 - default default] 103.30.145.221 "POST /v2.1/os-server-external-events HTTP/1.1" status: 200 len: 578 time: 0.2032709
+2018-12-11 15:39:35.476 6884 INFO nova.api.openstack.compute.server_external_events [req-78c92e2b-2f6e-485e-8dcb-1e47f34797b0 40f0d6ff67f643d3b4640d7fe7d0a709 49eb39871fb148a29fc2df713eeab655 - default default] Creating event network-vif-plugged:57e49f39-385d-462b-b9ca-2433979a8749 for instance 976898d1-8766-4131-9285-a6d0316af89c on nova-kvm.jcamp.net
+2018-12-11 15:39:35.481 6884 INFO nova.osapi_compute.wsgi.server [req-78c92e2b-2f6e-485e-8dcb-1e47f34797b0 40f0d6ff67f643d3b4640d7fe7d0a709 49eb39871fb148a29fc2df713eeab655 - default default] 103.30.145.221 "POST /v2.1/os-server-external-events HTTP/1.1" status: 200 len: 582 time: 0.1914091
+2018-12-11 15:39:41.028 6885 INFO nova.osapi_compute.wsgi.server [req-77e8fa32-2db3-4408-b80b-1f0fd71d2e48 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0042229
+2018-12-11 15:39:41.034 6885 INFO nova.osapi_compute.wsgi.server [req-74a61426-119d-4502-91e0-6ed06c684d8a 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0037730
+2018-12-11 15:39:42.097 6886 INFO nova.osapi_compute.wsgi.server [req-f81467fc-0923-4b93-b30a-f0df58e1ef25 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.8215861
+2018-12-11 15:39:53.077 6891 INFO nova.osapi_compute.wsgi.server [req-4e182013-5986-49d3-a246-72b025b9519e 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0035629
+2018-12-11 15:39:53.084 6891 INFO nova.osapi_compute.wsgi.server [req-e767433e-f394-4426-9b1b-1c9bba8f20b9 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0036950
+2018-12-11 15:39:53.930 6884 INFO nova.osapi_compute.wsgi.server [req-21b9bee4-2455-48a2-b072-ff406ec3741a 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.5896621
+2018-12-11 15:40:05.003 6891 INFO nova.osapi_compute.wsgi.server [req-f4cf885e-44bb-4310-9ba5-9d0afeef6158 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0036540
+2018-12-11 15:40:05.011 6891 INFO nova.osapi_compute.wsgi.server [req-98a241fa-3e62-4cb8-8cf8-4e122f1474a1 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0040710
+2018-12-11 15:40:05.926 6889 INFO nova.osapi_compute.wsgi.server [req-bad1d46e-8432-4760-8b2d-a44f6f8622bf 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.7582059
+2018-12-11 15:40:09.797 6884 INFO nova.osapi_compute.wsgi.server [req-5c471ad1-4159-4ffd-9f2b-841d5cda51cc 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/limits?reserved=1 HTTP/1.1" status: 200 len: 913 time: 0.2988491
+2018-12-11 15:40:10.606 6884 INFO nova.osapi_compute.wsgi.server [req-73cca9c8-4786-4f2e-8698-937410ce1621 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/extensions HTTP/1.1" status: 200 len: 23101 time: 0.0048139
+2018-12-11 15:40:12.509 6886 INFO nova.osapi_compute.wsgi.server [req-7f7e0fbf-c563-4ac7-8e22-3953dc672cf4 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.3822951
+2018-12-11 15:40:12.517 6886 INFO nova.osapi_compute.wsgi.server [req-9b231546-2f9f-477c-a767-9a13f07babb0 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0044188
+2018-12-11 15:40:13.371 6885 INFO nova.osapi_compute.wsgi.server [req-ceaee725-ff0a-47d1-adc7-2e0726b69ff3 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/servers/detail?project_id=56a2cb6964d94577af24a7aa0269f25e HTTP/1.1" status: 200 len: 9272 time: 0.5903089
+2018-12-11 15:40:16.874 6889 INFO nova.osapi_compute.wsgi.server [req-1ffa194a-15dd-4908-b320-865b7c70d491 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0043080
+2018-12-11 15:40:16.881 6889 INFO nova.osapi_compute.wsgi.server [req-9d3d4699-3717-4b7d-9378-6b9038cbf2a8 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0042500
+2018-12-11 15:40:17.737 6888 INFO nova.osapi_compute.wsgi.server [req-691e9cf0-4706-41a7-9d1c-016fb44735e9 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.6069589
+2018-12-11 15:40:25.251 6887 INFO nova.osapi_compute.wsgi.server [req-cee918b3-845c-4298-8686-90df4c8afdab 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.3588021
+2018-12-11 15:40:25.258 6887 INFO nova.osapi_compute.wsgi.server [req-14de644b-3fc1-4ac8-a66a-c848948d5b61 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0038950
+2018-12-11 15:40:26.091 6887 INFO nova.osapi_compute.wsgi.server [req-c7f65450-a0ec-43f5-9e15-6116b1b27ba5 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/servers/detail?project_id=56a2cb6964d94577af24a7aa0269f25e HTTP/1.1" status: 200 len: 9272 time: 0.6695440
+2018-12-11 15:40:28.705 6889 INFO nova.osapi_compute.wsgi.server [req-ef90d221-59d8-4807-8566-89c6121a2ddc 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0039630
+2018-12-11 15:40:28.712 6889 INFO nova.osapi_compute.wsgi.server [req-8b5a1af8-1047-41fa-9ec7-05a6c6aac39e 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0037560
+2018-12-11 15:40:29.553 6888 INFO nova.osapi_compute.wsgi.server [req-f3c2e7e6-ea7f-44a0-8e43-869cef18f453 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.5915790
+2018-12-11 15:40:37.251 6887 INFO nova.osapi_compute.wsgi.server [req-d78159ba-4cba-4173-a492-4719d614ce0a 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.0037701
+2018-12-11 15:40:37.258 6887 INFO nova.osapi_compute.wsgi.server [req-3d47da13-f448-49be-ba9a-0db79df9ab35 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0037420
+2018-12-11 15:40:38.059 6884 INFO nova.osapi_compute.wsgi.server [req-6bb3bb15-506a-407a-8152-d9be0f368cde 1c79eb43981a42998e5d239d20b310df 56a2cb6964d94577af24a7aa0269f25e - 449309895ba3410cb0d565bba1342b93 449309895ba3410cb0d565bba1342b93] 103.30.145.221 "GET /v2.1/servers/detail?project_id=56a2cb6964d94577af24a7aa0269f25e HTTP/1.1" status: 200 len: 9272 time: 0.6291821
+2018-12-11 15:40:41.084 6885 INFO nova.osapi_compute.wsgi.server [req-75018364-3708-460d-b67d-878573f127fd 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1 HTTP/1.1" status: 302 len: 328 time: 0.3704340
+2018-12-11 15:40:41.093 6885 INFO nova.osapi_compute.wsgi.server [req-98369db6-183c-47d0-bc3a-bcff7fabccdf 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/ HTTP/1.1" status: 200 len: 799 time: 0.0052161
+2018-12-11 15:40:42.104 6886 INFO nova.osapi_compute.wsgi.server [req-09854585-fd38-4de1-95dc-f97d60ad852d 2661ef095ffc4899a62cd8afd8b422fc c0b89f614b5a457cb5acef8fe8c2b320 - default default] 103.30.145.221 "GET /v2.1/servers/detail?project_id=c0b89f614b5a457cb5acef8fe8c2b320 HTTP/1.1" status: 200 len: 16267 time: 0.7704539
+
+
+
+==================================
+2018-12-12
+
+
+** BIKIN FLOATING IP - via OS-CLI **
+
+(venv_os) [centos@aji-instance1b ~]$ source aji2rc 
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip create 
+The request you have made requires authentication. (HTTP 401) (Request-ID: req-4b084e9c-edfc-4a72-ba4d-e5a8ede1d06f)
+
+aji2    << user ini dibikin pake python dengan domain: domain.aji dan project: project.aji
+        << project.aji diset ke aji2, dan aji2 sebagai admin
+
+
+(venv_os) [centos@aji-instance1b ~]$ source ajirc 
+aji << user ini dibikin dari horizon by admin dengan domain: default dan project: aji
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip create --description via-os-cli 0f697e52-1322-495f-bb86-b950ec32adb4
+Error while executing command: BadRequestException: 400, {"NeutronError": {"message": "Bad floatingip request: Network 0f697e52-1322-495f-bb86-b950ec32adb4 is not a valid external network.", "type": "BadRequest", "detail": ""}}
+<< harus ext-net
+
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip create --description via-os-cli d10dd06a-0425-49eb-a8ba-85abf55ac0f5
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| created_at          | 2018-12-12T02:52:31Z                 |
+| description         | via-os-cli                           |
+| dns_domain          | None                                 |
+| dns_name            | None                                 |
+| fixed_ip_address    | None                                 |
+| floating_ip_address | 103.30.145.183                       |
+| floating_network_id | d10dd06a-0425-49eb-a8ba-85abf55ac0f5 |
+| id                  | 6858d2ac-d3e0-440c-90db-7ad06d281cfb |
+| name                | 103.30.145.183                       |
+| port_details        | None                                 |
+| port_id             | None                                 |
+| project_id          | c0b89f614b5a457cb5acef8fe8c2b320     |
+| qos_policy_id       | None                                 |
+| revision_number     | 0                                    |
+| router_id           | None                                 |
+| status              | DOWN                                 |
+| subnet_id           | None                                 |
+| tags                | []                                   |
+| updated_at          | 2018-12-12T02:52:31Z                 |
++---------------------+--------------------------------------+
+
+
+kaitkan IP dengan INSTANCE
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip set --port 03c4dd38-8a7f-4256-b815-528dade8dd52 103.30.145.183
+
+dimana 03c4dd38-8a7f-4256-b815-528dade8dd52:
+    Fixed IPs
+        IP Address: 192.168.101.12
+        Subnet ID: dd0cfea4-07a8-49bb-bc75-7d4bfeb9d25c
+    cek di : http://rocky-controller.jcamp.net/project/networks/ports/03c4dd38-8a7f-4256-b815-528dade8dd52/detail
+
+cek hasilnya:
+
+(venv_os) [centos@aji-instance1b ~]$ ping 103.30.145.183
+PING 103.30.145.183 (103.30.145.183) 56(84) bytes of data.
+^C
+--- 103.30.145.183 ping statistics ---
+14 packets transmitted, 0 received, 100% packet loss, time 13038ms
+
+
+(venv_os) [centos@aji-instance1b ~]$ ssh centos@103.30.145.183
+ssh: connect to host 103.30.145.183 port 22: Connection timed out
+
+dari ms @mbog:
+    instancenya tidak ada keypair
+
+UNSET floatingip pake horizon
+
+ok, bikin instance dgn keypair:ibis, keypair cek di : http://rocky-controller.jcamp.net/project/key_pairs
+
+(envOS)  ★  ~/Documents/openstack2   master±  os server -c
+
+-----------------
+CREATE INSTANCE
+------------------
+                                     
+Pilih id network : 0f697e52-1322-495f-bb86-b950ec32adb4
+['req-47a189f7-80aa-4e60-acbd-15e213e128e5']
+{
+    "OS-DCF:diskConfig": "MANUAL",
+    "OS-EXT-AZ:availability_zone": "nova",
+    "OS-EXT-SRV-ATTR:host": "nova-kvm.jcamp.net",
+    "OS-EXT-SRV-ATTR:hypervisor_hostname": "nova-kvm.jcamp.net",
+    "OS-EXT-SRV-ATTR:instance_name": "instance-000000c6",
+    "OS-EXT-STS:power_state": 1,
+    "OS-EXT-STS:task_state": null,
+    "OS-EXT-STS:vm_state": "active",
+    "OS-SRV-USG:launched_at": "2018-12-12T04:12:36.000000",
+    "OS-SRV-USG:terminated_at": null,
+    "accessIPv4": "",
+    "accessIPv6": "",
+    "addresses": {
+        "network6.aji": [
+            {
+                "OS-EXT-IPS-MAC:mac_addr": "fa:16:3e:9a:35:82",
+                "OS-EXT-IPS:type": "fixed",
+                "addr": "192.168.101.26",
+                "version": 4
+            }
+        ]
+    },
+    "config_drive": "",
+    "created": "2018-12-12T04:12:27Z",
+    "flavor": {
+        "id": "df0c0ef6-5ddd-4b65-bf0a-a135287df742",
+        "links": [
+            {
+                "href": "http://rocky-controller.jcamp.net:8774/flavors/df0c0ef6-5ddd-4b65-bf0a-a135287df742",
+                "rel": "bookmark"
+            }
+        ]
+    },
+    "hostId": "297f185144fa89176350d133e832d4e88db59b8d14bed0a9ce835b90",
+    "id": "6e6e5546-bc69-4658-8329-844ade8f92c9",
+    "image": {
+        "id": "82189ef1-2c20-475c-9d40-325eb567df56",
+        "links": [
+            {
+                "href": "http://rocky-controller.jcamp.net:8774/images/82189ef1-2c20-475c-9d40-325eb567df56",
+                "rel": "bookmark"
+            }
+        ]
+    },
+    "key_name": "ibis",
+    "links": [
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/v2.1/servers/6e6e5546-bc69-4658-8329-844ade8f92c9",
+            "rel": "self"
+        },
+        {
+            "href": "http://rocky-controller.jcamp.net:8774/servers/6e6e5546-bc69-4658-8329-844ade8f92c9",
+            "rel": "bookmark"
+        }
+    ],
+    "metadata": {},
+    "name": "network6.aji-instance6.aji",
+    "os-extended-volumes:volumes_attached": [],
+    "progress": 0,
+    "security_groups": [
+        {
+            "name": "default"
+        }
+    ],
+    "status": "ACTIVE",
+    "tenant_id": "c0b89f614b5a457cb5acef8fe8c2b320",
+    "updated": "2018-12-12T04:12:36Z",
+    "user_id": "2661ef095ffc4899a62cd8afd8b422fc"
+}
+
+instance di atas, port_id nya : e389bfaf-280d-46df-b02c-9589f3bf5779
+caranya:
+    buka detail instance : http://rocky-controller.jcamp.net/project/instances/6e6e5546-bc69-4658-8329-844ade8f92c9/
+    klik tab Interfaces, klik name '(e389bfaf-280d)'
+    ketemu > ID e389bfaf-280d-46df-b02c-9589f3bf5779 
+
+set lagi..........
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip set --port e389bfaf-280d-46df-b02c-9589f3bf5779 103.30.145.183
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip list | grep 103.30.145.183
+| 6858d2ac-d3e0-440c-90db-7ad06d281cfb | 103.30.145.183      | 192.168.101.26   | e389bfaf-280d-46df-b02c-9589f3bf5779 | d10dd06a-0425-49eb-a8ba-85abf55ac0f5 | c0b89f614b5a457cb5acef8fe8c2b320 |
+
+(venv_os) [centos@aji-instance1b ~]$ ping 103.30.145.183
+PING 103.30.145.183 (103.30.145.183) 56(84) bytes of data.
+^C
+--- 103.30.145.183 ping statistics ---
+28 packets transmitted, 0 received, 100% packet loss, time 27090ms
+
+(venv_os) [centos@aji-instance1b ~]$ ssh centos@103.30.145.183
+ssh: connect to host 103.30.145.183 port 22: Connection timed out
+
+unset lagi.....
+set lagi..... dgn tambahan : --fixed-ip-address 192.168.101.26 *
+* supaya ada "OS-EXT-IPS:type": "floating", di data instance
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip set --port e389bfaf-280d-46df-b02c-9589f3bf5779 --fixed-ip-address 192.168.101.26 103.30.145.183
+
+(venv_os) [centos@aji-instance1b ~]$ openstack floating ip list | grep 103.30.145.183
+| 6858d2ac-d3e0-440c-90db-7ad06d281cfb | 103.30.145.183      | 192.168.101.26   | e389bfaf-280d-46df-b02c-9589f3bf5779 | d10dd06a-0425-49eb-a8ba-85abf55ac0f5 | c0b89f614b5a457cb5acef8fe8c2b320 |
+
+(venv_os) [centos@aji-instance1b ~]$ ping 103.30.145.183
+PING 103.30.145.183 (103.30.145.183) 56(84) bytes of data.
+^C
+--- 103.30.145.183 ping statistics ---
+366 packets transmitted, 0 received, 100% packet loss, time 366147ms
+
+(venv_os) [centos@aji-instance1b ~]$ ssh centos@103.30.145.183
+ssh: connect to host 103.30.145.183 port 22: Connection timed out
+(venv_os) [centos@aji-instance1b ~]$ 
+
+UNSET lagi.......
+
+coba set 103.30.145.183 di horizon > http://rocky-controller.jcamp.net/project/floating_ips/
+
+103.30.145.183    via-os-cli    network6.aji-instance6.aji 192.168.101.26    ext-net    Down
+
+kok down ???

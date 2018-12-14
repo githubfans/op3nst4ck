@@ -1,0 +1,45 @@
+CREATE virtual-env
+-------------------------
+virtualenv -p python3 env_tenant_tutorial
+ls env_tenant_tutorial/lib
+source env_tenant_tutorial/bin/activate
+
+https://www.linode.com/docs/development/python/create-a-python-virtualenv-on-ubuntu-1610/
+
+python3 di virtualenv
+---------------------------
+cara 1 - otomatis bikin virtual-env sndiri
+$ pipenv --three
+
+cara 2 - aktifkan dulu virtual-env yg dibikin sendiri
+$ curl https://bootstrap.pypa.io/get-pip.py | python3
+
+https://www.caseylabs.com/how-to-create-a-python-3-6-virtual-environment-on-ubuntu-16-04/
+
+JIKA dgn [ cara 2 ] python blm v3.6
+
+$ sudo ln -s /usr/bin/python3.6 /{path-to-docs}/{virtual-env}/bin/python3
+$ sudo ln -s /usr/local/bin/pip /{path-to-docs}/{virtual-env}/bin/pip3
+
+https://superuser.com/questions/1284352/pip-missing-from-python3-6-install-on-ubuntu-16-04
+
+
+PYTHON 3 VIRTUAL ENV INSTALL DJANGO
+------------------------------------------------------
+
+> pip3 install Django
+
+https://help.dreamhost.com/hc/en-us/articles/215317948-How-to-install-Django-using-virtualenv
+
+
+
+DUPLICATE VIRTUAL ENV
+---------------------------------
+
+[ 1 ] activate your virtualenv
+[ 2 ] pip freeze > requirements.txt
+[ 3 ] activate your new virtualenv
+[ 4 ] pip install -r requirements.txt
+
+https://stackoverflow.com/questions/7438681/duplicate-virtualenv#7438771
+

@@ -558,7 +558,7 @@ elif argv1 == 'pdelete':
 
         print('Lengkapi input!')
 
-elif argv1 == 'rlist':
+elif argv1 == 'rolelist':
     '''
     role list
     '''
@@ -574,7 +574,7 @@ elif argv1 == 'rlist':
     except IndexError:
         print('ERROR')
 
-elif argv1 == 'rgrant':
+elif argv1 == 'rolegrant':
     '''
     grant role
     '''
@@ -724,10 +724,11 @@ elif argv1 == 'netcreate':
         result = nt.create_subnet(body=subnets)
         j = json.dumps(result, indent=4)
         jl = json.loads(j)
-        print(jl)
+        # print(jl)
         if name == jl['subnets'][0]['name']:
             print('subnet baru ' + f.bold + fg.green + name + f.reset + ' sudah jadi.')
-            subnetList(cari_name=name)
+            # subnetList(cari_name=name)
+            subnet_baru = nt.show_subnet(subnet=jl['subnets'][0]['id'])
         else:
             print(f.red + 'subnet baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
 
@@ -959,38 +960,43 @@ elif argv1 == 'routercreate':
             if n >= 5:
                 exit('Batal bikin subnet.')
                 nt.delete_router(router_id)
-        port_name = router_name + '-' + nextName_port_v1()
-        print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
+        # port_name = router_name + '-' + nextName_port_v1()
+        # print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
 
-        subnet_search_network = nt.list_subnets(network_id=network_id)
-        # print(subnet_search_network)
-        subnet_id = subnet_search_network['subnets'][0]['id']
-        # print(subnet_id)
-        gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
-        # print(gateway_parse3_1)
-        gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
-        # print(gateway_parse3)
+        # subnet_search_network = nt.list_subnets(network_id=network_id)
+        # # print(subnet_search_network)
+        # subnet_id = subnet_search_network['subnets'][0]['id']
+        # # print(subnet_id)
+        # gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
+        # # print(gateway_parse3_1)
+        # gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
+        # # print(gateway_parse3)
 
-        body_value = {
-            'port': {
-                'admin_state_up': True,
-                'device_id': router_id,
-                'name': port_name,
-                'network_id': network_id,
-                # 'binding:host_id': 'rocky-controller.jcamp.net',
-                # 'binding:profile': {},
-                # 'binding:vnic_type': 'normal',
-                # 'fixed_ips': [{
-                #     'subnet_id': subnet_id,
-                #     'ip_address': '192.168.' + gateway_parse3 + '.1'
-                # }],
-            }
+        # body_value = {
+        #     'port': {
+        #         'admin_state_up': True,
+        #         'device_id': router_id,
+        #         'name': port_name,
+        #         'network_id': network_id,
+        #         # 'binding:host_id': 'rocky-controller.jcamp.net',
+        #         # 'binding:profile': {},
+        #         # 'binding:vnic_type': 'normal',
+        #         # 'fixed_ips': [{
+        #         #     'subnet_id': subnet_id,
+        #         #     'ip_address': '192.168.' + gateway_parse3 + '.1'
+        #         # }],
+        #     }
+        # }
+        # print(customprint(body_value))
+
+        # response = nt.create_port(body=body_value)
+        # # print(response)
+        # portList(cari_name=port_name)
+        json_str = {
+            'network_id': network_id,
+            'router_id': router_id
         }
-        print(customprint(body_value))
-
-        response = nt.create_port(body=body_value)
-        # print(response)
-        portList(cari_name=port_name)
+        portCreate(json_str)
 
 elif argv1 == 'routercreate.v1.1':
     '''
@@ -1204,49 +1210,42 @@ elif argv1 == 'port':
             if n >= 5:
                 exit('Batal bikin port.')
 
-        # name = ''
-        # n = 0
-        # ports = ''
-        # while name == '' or len(name) < 5 or len(ports['ports']) > 0:
-        #     name = input('Nama port (min. 5 hurup) : ')
-        #     ports = nt.list_ports(name=name)
-        #     lennet = len(ports['ports'])
-        #     if lennet > 0:
-        #         print('Nama port "' + name + '" sudah ada.')
-        #     n += 1
-        #     if n >= 5:
-        #         exit('Batal bikin port.')
-        name = nextName_port()
-        subnet_search_network = subnet_id = nt.list_subnets(network_id=network)
-        subnet = subnet_search_network['subnets'][0]['id']
-        gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
-        gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
+        # name = nextName_port_v1_1()
+        # subnet_search_network = subnet_id = nt.list_subnets(network_id=network)
+        # subnet = subnet_search_network['subnets'][0]['id']
+        # gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
+        # gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
         # exit(gateway_parse3)
-        if name != '':
+        # if name != '':
             # device_id = router_id
-            body_value = {
-                'port': {
-                    'admin_state_up': True,
-                    'device_id': router,
-                    'name': name,
-                    'network_id': network,
-                    'binding:host_id': 'rocky-controller.jcamp.net',
-                    'binding:profile': {},
-                    'binding:vnic_type': 'normal',
-                    # 'fixed_ips': [{
-                    #     'subnet_id': subnet,
-                    #     'ip_address': '192.168.' + gateway_parse3 + '.1'
-                    # }],
-                }
-            }
-            result = nt.create_port(body=body_value)
-            j = json.dumps(result, indent=4)
-            jl = json.loads(j)
-            if name == jl['port']['name']:
-                print('port baru ' + f.bold + fg.green + name + f.reset + ' sudah jadi.')
-                portList(cari_name=name)
-            else:
-                print(f.red + 'port baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
+            # body_value = {
+            #     'port': {
+            #         'admin_state_up': True,
+            #         'device_id': router,
+            #         'name': name,
+            #         'network_id': network,
+            #         'binding:host_id': 'rocky-controller.jcamp.net',
+            #         'binding:profile': {},
+            #         'binding:vnic_type': 'normal',
+            #         # 'fixed_ips': [{
+            #         #     'subnet_id': subnet,
+            #         #     'ip_address': '192.168.' + gateway_parse3 + '.1'
+            #         # }],
+            #     }
+            # }
+            # result = nt.create_port(body=body_value)
+            # j = json.dumps(result, indent=4)
+            # jl = json.loads(j)
+            # if name == jl['port']['name']:
+            #     print('port baru ' + f.bold + fg.green + name + f.reset + ' sudah jadi.')
+            #     portList(cari_name=name)
+            # else:
+            #     print(f.red + 'port baru ' + f.bold + name + f.reset + f.bold + ' tidak jadi.' + f.reset)
+        json_str = {
+            'network_id': network_id,
+            'router_id': router_id
+        }
+        portCreate(json_str)
 
     elif arg2 == '-c2':
 
@@ -1259,6 +1258,7 @@ elif argv1 == 'port':
             if n >= 3:
                 exit('Batal bikin port.')
         router_id = router
+
         networkList()
         network = ''
         n = 0
@@ -1270,38 +1270,32 @@ elif argv1 == 'port':
 
         network_id = network
         show_router = nt.show_router(router=router)
-        if router != '' and show_router['router']['name'] != '' and network != '':
+        print(customprint(show_router))
+        if router_id != '' and show_router['router']['name'] != '' and network != '':
             port_name = show_router['router']['name'] + '-' + nextName_port_v1()
             print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
 
-            subnet_search_network = nt.list_subnets(network_id=network_id)
-            # print(subnet_search_network)
-            subnet_id = subnet_search_network['subnets'][0]['id']
-            # print(subnet_id)
-            gateway_parse3_1 = str(subnet_search_network['subnets'][0]['cidr']).strip().split('192.168.')[1]
-            # print(gateway_parse3_1)
-            gateway_parse3 = gateway_parse3_1.strip().split('.0')[0]
-            # print(gateway_parse3)
-            body_value = {
-                'port': {
-                    'admin_state_up': True,
-                    'device_id': router_id,
-                    'name': port_name,
-                    'network_id': network_id,
-                    # 'binding:host_id': 'rocky-controller.jcamp.net',
-                    # 'binding:profile': {},
-                    # 'binding:vnic_type': 'normal',
-                    # 'fixed_ips': [{
-                    #     'subnet_id': subnet_id,
-                    #     'ip_address': '192.168.' + gateway_parse3 + '.1'
-                    # }],
+            try:
+                body_value = {
+                    'port': {
+                        'admin_state_up': True,
+                        'name': port_name,
+                        'network_id': network_id,
+                    }
                 }
-            }
-            print(customprint(body_value))
+                create_port = nt.create_port(body=body_value)
+                if port_name == create_port['port']['name']:
+                    print('port baru ' + f.bold + fg.green + port_name + f.reset + ' sudah jadi.')
+                    port_baru = nt.show_port(port=create_port['port']['id'])
+                    print(port_baru)
 
-            response = nt.create_port(body=body_value)
-            # print(response)
-            portList(cari_name=port_name)
+                print('\n\n' + fg.yellow + 'Bikin interface "' + show_router['router']['name'] + '"' + f.reset)
+                pl = {}
+                pl['port_id'] = create_port['port']['id']
+                attch = nt.add_interface_router(router=router_id, body=pl)
+                print(customprint(attch))
+            except IndexError:
+                print('Gagal bikin Port')
 
     else:
         print(arg2)
@@ -1314,65 +1308,64 @@ elif argv1 == 'server':
     '''
     * server list
     * -c = create
+    * -c --network:{nework_id} = create with network
     '''
     try:
         arg2 = sys.argv[2]
     except IndexError:
         arg2 = ''
-    if arg2 == '':
-        nv = get_nova()
-        nv_slist = nv.servers.list()
-        print(nv_slist)
 
+    if arg2 == '':
+        cari_name = input('Nama Server / Instance : ')
+        if cari_name == '':
+            cari_name = ''
+            detail = False
+        else:
+            detail = True
+        print(fg.yellow + 'Tunggu....' + f.reset)
+        serverList(cari_name=cari_name, cari_project=GetUserRCProjectID(), detail=detail, header=True)
     elif arg2 == '-c':
+        network = ''
+        try:
+            arg3 = sys.argv[3]
+        except IndexError:
+            arg3 = ''
+        if re.search('--network:', arg3):
+            try:
+                network = arg3.strip().split('--network:')[1]
+            except IndexError:
+                network = ''
 
         print('\n-----------------\nCREATE INSTANCE\n------------------\n')
 
+        nt = get_neutron()
         nv = get_nova()
 
-        # instance_name = ''
-        # n = 0
-        # servers = ''
-        # while instance_name == '' or len(instance_name) < 5 or len(servers) > 0:
-        #     instance_name = input('Nama instance (min. 5 hurup) : ')
-        #     servers = nv.servers.list(search_opts={'name': instance_name})
-        #     if len(servers) > 0:
-        #         print('Nama instance "' + instance_name + '" sudah ada.')
-        #     n += 1
-        #     if n >= 5:
-        #         exit('Batal bikin instance.')
-        instance_name = nextName_instance()
+        instance_name = nextName_instance_v1()
         image = '82189ef1-2c20-475c-9d40-325eb567df56'
         flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
 
-        networkList()
-        network = ''
-        n = 0
-        while len(network) != 36:
-            network = input('Pilih id network : ')
-            n += 1
-            if n >= 5:
-                exit('Batal bikin instance.')
-        # if image != '' and flavor != '' and network != '':
-        #     try:
-        #         create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'default'}, createdby=get_var('OS_USERNAME'))
-        #         print(create_instance)
-        #     except IndexError:
-        #         print('create instance "' + instance_name + '" gagal !')
-        #     finally:
-        #         print('Instance created : "' + instance_name + '"')
-        # else:
-        #     print('Periksa inputan !')
+        if network == '':
+            networkList()
+            network = ''
+            n = 0
+            while len(network) != 36:
+                network = input('Pilih id network : ')
+                n += 1
+                if n >= 5:
+                    exit('Batal bikin instance.')
 
-        # instance_name = nextName_instance()
-        # print('\n\n' + fg.yellow + 'Bikin instance "' + instance_name + '"' + f.reset)
-        # image = '82189ef1-2c20-475c-9d40-325eb567df56'
-        # flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
-        # network = network_id
-        if image != '' and flavor != '' and network != '':
+        show_network = nt.show_network(network=network)
+        instance_name = show_network['network']['name'] + '-' + instance_name
+        if instance_name != '' and image != '' and flavor != '' and network != '':
             try:
-                create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'4bed540c-266d-4cc2-8225-3e02ccd89ff1'}, createdby=get_var('OS_USERNAME'))
-                print(create_instance)
+                json_str = {
+                    'instance_name': instance_name,
+                    'image': image,
+                    'flavor': flavor,
+                    'network': network
+                }
+                createServer(json_str)
             except IndexError:
                 print('create instance gagal !')
         else:
@@ -1419,28 +1412,6 @@ elif argv1 == 'createnetcomplete':
 
             gateway_parse3 = str(get_availableGatewayIp())
 
-            # body_create_subnet = {'subnets': [{'cidr': '192.168.199.0/24',
-            #                       'ip_version': 4, 'network_id': network_id}]}
-
-            # body_create_subnet = {'subnets': [
-            #     {
-            #         "name": subnet_name,
-            #         "description": "via createnetcomplete@" + __file__ + ". createdby=" + UserRC_username,
-            #         "enable_dhcp": "True",
-            #         "dns_nameservers": ["8.8.8.8"],
-            #         "allocation_pools": [{
-            #             "start": "192.168." + gateway_parse3 + ".2",
-            #             "end": "192.168." + gateway_parse3 + ".200",
-            #         }],
-            #         "gateway_ip": "192.168." + gateway_parse3 + ".1",
-            #         "cidr": "192.168." + gateway_parse3 + ".0/24",
-            #         'ip_version': 4,
-            #         "network_id": network_id,
-            #         "project_id": project,
-            #         "tenant_id": project,
-            #     }
-            # ]}
-
             body_create_subnet = {
                 'subnets': [{
                     'name': subnet_name,
@@ -1471,7 +1442,6 @@ elif argv1 == 'createnetcomplete':
                     subnet_output = data
                     break
             subnet_id = subnet_output['id']
-            # print('Created subnet %s' % subnet)
             subnetList(cari_name=subnet_name)
         finally:
             print("Execution completed : network + subnet")
@@ -1482,12 +1452,6 @@ elif argv1 == 'createnetcomplete':
             router_name = nextName_router_v1()
             print('\n\n' + fg.yellow + 'Bikin router "' + router_name + '"' + f.reset)
             nt.format = 'json'
-
-            # ip_add = ''
-            # print('\n\n' + fg.lightgrey + 'Cari available ip...."' + router_name + '"' + f.reset)
-            # while ip_add is False or ip_add == '':
-            #     ip_add = get_availableIpPublic(ipprefix='103.30.145.')
-            # print('\n\n' + fg.lightgrey + 'available ip : "' + ip_add + '"' + f.reset)
 
             request = {
                 'router':
@@ -1509,7 +1473,7 @@ elif argv1 == 'createnetcomplete':
 
             router = nt.create_router(request)
             router_id = router['router']['id']
-            router = nt.show_router(router_id)
+            show_router = nt.show_router(router_id)
             # print(router)
             routerList(cari_name=router_name)
         finally:
@@ -1518,53 +1482,51 @@ elif argv1 == 'createnetcomplete':
             time.sleep(5)
             port_name = router_name + '-' + nextName_port_v1()
             print('\n\n' + fg.yellow + 'Bikin port "' + port_name + '"' + f.reset)
-            # body_value = {
-            #     'port': {
-            #         'admin_state_up': True,
-            #         'device_owner': 'network:router_interface',
-            #         'device_id': router_id,
-            #         'name': port_name,
-            #         'network_id': network_id,
-            #         'security_groups': {'4bed540c-266d-4cc2-8225-3e02ccd89ff1'},
-            #         'binding:host_id': 'rocky-controller.jcamp.net',
-            #         'binding:profile': {},
-            #         'binding:vnic_type': 'normal',
-            #         'fixed_ips': [{
-            #             'subnet_id': subnet_id,
-            #             'ip_address': '192.168.' + gateway_parse3 + '.1'
-            #         }],
-            #     }
-            # }
 
-            # response = nt.create_port(body=body_value)
+            try:
+                # body_value = {
+                #     'port': {
+                #         'admin_state_up': True,
+                #         'name': port_name,
+                #         'network_id': network_id,
+                #     }
+                # }
+                # create_port = nt.create_port(body=body_value)
+                # if port_name == create_port['port']['name']:
+                #     print('port baru ' + f.bold + fg.green + port_name + f.reset + ' sudah jadi.')
+                #     port_baru = nt.show_port(port=create_port['port']['id'])
+                #     print(port_baru)
 
-            body_value = {
-                'port': {
-                    'admin_state_up': True,
-                    'name': port_name,
+                # print('\n\n' + fg.yellow + 'Bikin interface "' + show_router['router']['name'] + '"' + f.reset)
+                # pl = {}
+                # pl['port_id'] = create_port['port']['id']
+                # attch = nt.add_interface_router(router=router_id, body=pl)
+                # print(customprint(attch))
+                json_str = {
                     'network_id': network_id,
+                    'router_id': router_id
                 }
-            }
-            response = nt.create_port(body=body_value)
-            print('\n\n' + fg.yellow + 'Bikin interface "' + router['router']['name'] + '"' + f.reset)
-            pl = {}
-            pl['port_id'] = response['port']['id']
-            attch = nt.add_interface_router(router=router_id, body=pl)
-
-            portList(cari_name=port_name)
+                portCreate(json_str)
+            except IndexError:
+                print('Gagal bikin Port')
         finally:
             print("Execution completed : + port")
     for numin in range(0, 2):
         time.sleep(5)
-        instance_name = nextName_instance_v1()
+        instance_name = network_name + '-' + nextName_instance_v1()
         print('\n\n' + fg.yellow + 'Bikin instance "' + instance_name + '"' + f.reset)
         image = '82189ef1-2c20-475c-9d40-325eb567df56'
         flavor = 'df0c0ef6-5ddd-4b65-bf0a-a135287df742'
         network = network_id
         if image != '' and flavor != '' and network != '':
             try:
-                create_instance = nv.servers.create(name=instance_name, image=image, flavor=flavor, nics=[{'net-id': network, "v4-fixed-ip": ''}], security_groups={'4bed540c-266d-4cc2-8225-3e02ccd89ff1'}, createdby=get_var('OS_USERNAME'))
-                print(create_instance)
+                json_str = {
+                    'instance_name': instance_name,
+                    'image': image,
+                    'flavor': flavor,
+                    'network': network
+                }
+                createServer(json_str)
             except IndexError:
                 print('create instance gagal !')
         else:
@@ -1583,30 +1545,13 @@ elif argv1 == 'floatingip':
     except IndexError:
         arg2 = ''
     if arg2 == '':
-        floatinIPList()
+        floatingIPList()
     elif arg2 == '-c':
-        # floatingip = {
-        #     'floatingips': {
-        #         'description': 'via python shell',
-        #         'project_id': '56a2cb6964d94577af24a7aa0269f25e',
-        #         'tenant_id': '56a2cb6964d94577af24a7aa0269f25e',
-        #         'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5',
-        #         'port_details': {
-        #             'name': 'port_details',
-        #             'admin_state_up': True,
-        #             'network_id': 'a15e19b0-77a7-4d5c-9132-f06c9f4742f2',
-        #             'device_owner': 'compute:nova',
-        #             'device_id': '16b27d36-2c04-4d14-b762-24655c9d6a97'
-        #         },
-        #         'fixed_ip_address': '192.168.51.2',
-        #         'port_id': '5d229609-8248-415a-98c3-75129e0840fa',
-        #     }
-        # }
 
         floatingip = {
             'floatingips': {
                 'description': 'via ' + __file__,
-                'project_id': '56a2cb6964d94577af24a7aa0269f25e',
+                'project_id': GetUserRCProjectID(),
                 'floating_network_id': 'd10dd06a-0425-49eb-a8ba-85abf55ac0f5',
             }
         }
@@ -1627,4 +1572,9 @@ elif argv1 == 'test':
     # print(nextName_port())
     # networkList(cari_name='', cari_id='1f7d1582-afd6-41a0-bc60-e366c81ff4d8', childs=True, header=True)
     # networkList(cari_id='d68ce00e-943b-45fe-ae0c-487b667d398c')
-    print(nextName_instance_v1())
+    # print(nextName_instance_v1())
+    # print(nextName_port_v1())
+    # print(nextName_port_v1_1())
+    # print(GetUserRCProjectID())
+    # portList(cari_name='', cari_id='', cari_network='', parents=False, header=True)
+    serverList(cari_name='', cari_id='', cari='project_id:c0b89f614b5a457cb5acef8fe8c2b320', parents=True, header=True)
